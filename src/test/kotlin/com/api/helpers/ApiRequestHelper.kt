@@ -17,7 +17,6 @@ object ApiRequestHelper {
         return client.newCall(request).execute()
     }
 
-//    @Throws(IOException::class)
 //    fun getBearerToken(url: String, body: RequestBody, headers: Headers): String {
 //        val request = Request.Builder()
 //                .url(url)
