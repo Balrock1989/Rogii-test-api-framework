@@ -1,23 +1,17 @@
 package com.api.helpers
 
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.Response
-import java.net.InetSocketAddress
-import java.net.Proxy
+import LoggingInterceptor
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
 
 
 object ApiRequestHelper {
 
-     val client: OkHttpClient = OkHttpClient()
+    private val client: OkHttpClient = OkHttpClient.Builder()
+            .addNetworkInterceptor(LoggingInterceptor())
+            .build()
 
-
-//    private val JSON: PageAttributes.MediaType = "application/json; charset=utf-8".toMediaType()
-
-    fun executeRequest(request: Request) : Response {
-        return client.newCall(request).execute()
-    }
+    private val JSON: MediaType = "application/json; charset=utf-8".toMediaType()
 
 //    fun getBearerToken(url: String, body: RequestBody, headers: Headers): String {
 //        val request = Request.Builder()
@@ -31,12 +25,11 @@ object ApiRequestHelper {
 //        return JSONObject(result).get("token").toString()
 //    }
 
-    fun post(url: String, body: RequestBody) : Response {
+    fun post(url: String, body: RequestBody): Response {
         val request = Request.Builder()
                 .url(url)
                 .post(body)
                 .build()
         return client.newCall(request).execute()
     }
-
 }

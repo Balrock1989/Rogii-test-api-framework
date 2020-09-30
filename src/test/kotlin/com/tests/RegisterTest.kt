@@ -8,6 +8,7 @@ import com.api.models.register.PositiveRegister
 import com.api.data.RandomGenerator
 import com.api.helpers.ApiRequestHelper.post
 import kotlinx.serialization.json.Json
+import okhttp3.FormBody
 import okhttp3.RequestBody
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -42,7 +43,8 @@ class RegisterTestBase: BaseTest(), RandomGenerator {
         return arrayOf(
                 arrayOf(getAuthBody("OtherLogin@reqres.in", DataBank.PASSWORD_ADMIN.get()), "Note: Only defined users succeed registration"),
                 arrayOf(getAuthBody(DataBank.LOGIN_ADMIN.get(), ""), "Missing password"),
-                arrayOf(getAuthBody("", getRandomString(15)), "Missing email or username")
+                arrayOf(getAuthBody("", getRandomString(15)), "Missing email or username"),
+                arrayOf(FormBody.Builder().build(), "Missing email or username")
         )
     }
 
