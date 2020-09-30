@@ -5,8 +5,7 @@ import api.data.getAuthBody
 import com.BaseTest
 import com.api.models.register.NegativeRegister
 import com.api.models.register.PositiveRegister
-import com.api.data.RandomGenerator
-import com.api.helpers.ApiRequestHelper.post
+
 import kotlinx.serialization.json.Json
 import okhttp3.FormBody
 import okhttp3.RequestBody
@@ -16,7 +15,7 @@ import org.hamcrest.Matchers.notNullValue
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
-class RegisterTestBase: BaseTest(), RandomGenerator {
+class RegisterTestBase: BaseTest() {
 
     @DataProvider
     fun positiveBody(): Array<Array<RequestBody>> {
@@ -30,7 +29,7 @@ class RegisterTestBase: BaseTest(), RandomGenerator {
 
     @Test(description = "Positive authorization", dataProvider = "positiveBody")
     fun positiveRegisterTest(body: RequestBody) {
-        post(DataBank.LOGIN_URL.get(), body).use{ response ->
+        post(DataBank.REGISTER_URL.get(), body).use{ response ->
             assertThat(response.code, equalTo(200))
             val authResponse = Json.decodeFromString(PositiveRegister.serializer(), response.body!!.string())
             assertThat(authResponse.token.length, equalTo(17))
@@ -50,7 +49,7 @@ class RegisterTestBase: BaseTest(), RandomGenerator {
 
     @Test(description = "Register with invalid data", dataProvider = "invalidBody")
     fun registerWithInvalidDataTest(body: RequestBody, message: String) {
-        post(DataBank.LOGIN_URL.get(), body).use{ response ->
+        post(DataBank.REGISTER_URL.get(), body).use{ response ->
             assertThat(response.code, equalTo(400))
             val authResponse = Json.decodeFromString(NegativeRegister.serializer(), response.body!!.string())
             assertThat(authResponse.error, equalTo(message))
