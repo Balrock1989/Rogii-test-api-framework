@@ -15,7 +15,7 @@ import org.hamcrest.Matchers.notNullValue
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
-class RegisterTestBase: BaseTest() {
+class RegisterTest: BaseTest() {
 
     @DataProvider
     fun positiveBody(): Array<Array<RequestBody>> {
@@ -29,11 +29,11 @@ class RegisterTestBase: BaseTest() {
 
     @Test(description = "Positive authorization", dataProvider = "positiveBody")
     fun positiveRegisterTest(body: RequestBody) {
-        post(DataBank.REGISTER_URL.get(), body).use{ response ->
-            assertThat(response.code, equalTo(200))
-            val authResponse = Json.decodeFromString(PositiveRegister.serializer(), response.body!!.string())
-            assertThat(authResponse.token.length, equalTo(17))
-            assertThat(authResponse.id, notNullValue())
+        post(DataBank.REGISTER_URL.get(), body).use{
+            assertThat(it.code, equalTo(200))
+            val response = Json.decodeFromString(PositiveRegister.serializer(), it.body!!.string())
+            assertThat(response.token.length, equalTo(17))
+            assertThat(response.id, notNullValue())
         }
     }
 
@@ -49,10 +49,10 @@ class RegisterTestBase: BaseTest() {
 
     @Test(description = "Register with invalid data", dataProvider = "invalidBody")
     fun registerWithInvalidDataTest(body: RequestBody, message: String) {
-        post(DataBank.REGISTER_URL.get(), body).use{ response ->
-            assertThat(response.code, equalTo(400))
-            val authResponse = Json.decodeFromString(NegativeRegister.serializer(), response.body!!.string())
-            assertThat(authResponse.error, equalTo(message))
+        post(DataBank.REGISTER_URL.get(), body).use{
+            assertThat(it.code, equalTo(400))
+            val response = Json.decodeFromString(NegativeRegister.serializer(), it.body!!.string())
+            assertThat(response.error, equalTo(message))
         }
     }
 }
