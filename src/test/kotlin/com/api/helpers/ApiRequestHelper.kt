@@ -1,19 +1,21 @@
-package api.helpers
+package com.api.helpers
 
-import com.sun.net.httpserver.Headers
-import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaType
-import org.json.JSONObject
-import org.testng.Assert
-import java.awt.PageAttributes
-import java.io.IOException
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.Response
+import java.net.InetSocketAddress
+import java.net.Proxy
 
 
 object ApiRequestHelper {
-    private val client: OkHttpClient = OkHttpClient()
+
+     val client: OkHttpClient = OkHttpClient()
+
+
 //    private val JSON: PageAttributes.MediaType = "application/json; charset=utf-8".toMediaType()
 
-    fun executeRequest(request:Request) : Response {
+    fun executeRequest(request: Request) : Response {
         return client.newCall(request).execute()
     }
 
@@ -33,7 +35,7 @@ object ApiRequestHelper {
         val request = Request.Builder()
                 .url(url)
                 .post(body)
-                .build();
+                .build()
         return client.newCall(request).execute()
     }
 

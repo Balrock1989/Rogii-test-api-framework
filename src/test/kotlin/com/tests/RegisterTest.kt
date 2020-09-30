@@ -2,10 +2,11 @@ package com.tests
 
 import api.data.DataBank
 import api.data.getAuthBody
-import api.helpers.ApiRequestHelper.post
+import com.BaseTest
 import com.api.models.register.NegativeRegister
 import com.api.models.register.PositiveRegister
 import com.api.data.RandomGenerator
+import com.api.helpers.ApiRequestHelper.post
 import kotlinx.serialization.json.Json
 import okhttp3.RequestBody
 import org.hamcrest.MatcherAssert.assertThat
@@ -14,7 +15,7 @@ import org.hamcrest.Matchers.notNullValue
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
-class AuthorizationTest: RandomGenerator {
+class RegisterTestBase: BaseTest(), RandomGenerator {
 
     @DataProvider
     fun positiveBody(): Array<Array<RequestBody>> {
