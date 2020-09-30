@@ -63,6 +63,11 @@
             <artifactId>kotlinx-serialization-runtime</artifactId>
             <version>1.0-M1-1.4.0-rc</version>
         </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>LATEST</version>
+        </dependency>
     </dependencies>
 
     <build>

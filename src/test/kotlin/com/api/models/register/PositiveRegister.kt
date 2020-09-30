@@ -1,10 +1,10 @@
-package api.models
+package com.api.models.register
 
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AuthModel(
+data class PositiveRegister(
         @Required val id: Int = 0,
         @Required val token: String = "",
 )
