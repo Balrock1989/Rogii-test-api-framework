@@ -1,4 +1,4 @@
-package com.api.models.register
+package com.models.register
 
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable

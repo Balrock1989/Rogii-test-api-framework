@@ -1,16 +1,15 @@
 package com
 
 
-import com.api.data.RandomGenerator
-import com.api.helpers.ApiRequestHelper
+import com.api.Generator
 import org.testng.annotations.AfterSuite
 import org.testng.annotations.BeforeSuite
 
 
-open class BaseTest : ApiRequestHelper(), RandomGenerator {
+open class BaseTest : Generator() {
 
     @BeforeSuite
-    fun setupBeforeTests(){
+    fun setupBeforeTests() {
         if (System.getProperty("logger").toBoolean()) {
             initOkHTTPClientWithLogger()
         } else {
@@ -19,7 +18,7 @@ open class BaseTest : ApiRequestHelper(), RandomGenerator {
     }
 
     @AfterSuite
-    fun clear(){
+    fun clear() {
 
     }
 }

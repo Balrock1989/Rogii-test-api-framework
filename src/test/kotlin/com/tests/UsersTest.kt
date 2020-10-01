@@ -1,17 +1,17 @@
 package com.tests
 
-import api.data.DataBank
+import com.data.DataBank
 import com.BaseTest
-import com.api.models.users.Users
+import com.models.users.Users
 import kotlinx.serialization.json.Json
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.greaterThanOrEqualTo
+import org.hamcrest.Matchers.*
 import org.hamcrest.text.MatchesPattern.matchesPattern
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
 class UsersTest : BaseTest() {
+    val USERS_PER_PAGE: Int = 6
 
     @DataProvider
     fun positivePages(): Array<Array<Int>> {
@@ -21,14 +21,14 @@ class UsersTest : BaseTest() {
         )
     }
 
-    @Test(description = "Validate Users", dataProvider = "positivePages")
+    @Test(description = "Валидация списка пользователей", dataProvider = "positivePages")
     fun validateUsersDetailsTest(page: Int) {
         get(DataBank.USERS_URL.get() + "?page=$page").use {
             assertThat(it.code, equalTo(200))
             val users = Json.decodeFromString(Users.serializer(), it.body!!.string())
             assertThat(users.page, equalTo(page))
             assertThat(users.total, greaterThanOrEqualTo(users.per_page))
-            assertThat(users.per_page, equalTo(users.data.size))
+            assertThat(users.per_page, equalTo(USERS_PER_PAGE))
             assertThat(users.ad.company, equalTo(DataBank.AD_COMPANY.get()))
             assertThat(users.ad.text, equalTo(DataBank.AD_TEXT.get()))
             assertThat(users.ad.url, equalTo(DataBank.AD_URL.get()))
@@ -43,36 +43,44 @@ class UsersTest : BaseTest() {
     }
 
     @DataProvider
-    fun otherPages(): Array<Array<Int>> {
+    fun emptyPages(): Array<Array<Int>> {
         return arrayOf(
                 arrayOf(-1),
                 arrayOf(3),
                 arrayOf(999),
-        )
+                )
     }
 
-    @Test(description = "Test other pages", dataProvider = "otherPages")
+    @Test(description = "Проверка пустых страниц", dataProvider = "emptyPages")
     fun otherPagesTest(page: Int) {
         get(DataBank.USERS_URL.get() + "?page=$page").use {
             assertThat(it.code, equalTo(200))
             val users = Json.decodeFromString(Users.serializer(), it.body!!.string())
-            assertThat(users.per_page, equalTo(0))
-            assertThat(users.page, equalTo(page))
-            assertThat(users.total, greaterThanOrEqualTo(0))
+            assertThat(users.data, hasSize(0))
             assertThat(users.ad.company, equalTo(DataBank.AD_COMPANY.get()))
             assertThat(users.ad.text, equalTo(DataBank.AD_TEXT.get()))
             assertThat(users.ad.url, equalTo(DataBank.AD_URL.get()))
+            assertThat(users.per_page, equalTo(USERS_PER_PAGE))
+            assertThat(users.page, equalTo(page))
+            assertThat(users.total, greaterThanOrEqualTo(0))
         }
     }
 
-    @Test(description = "Test zero page")
-    fun zeroPageTest() {
-        get(DataBank.USERS_URL.get() + "?page=0").use {
+    @DataProvider
+    fun otherPages(): Array<Array<Any>> {
+        return arrayOf(
+                arrayOf("?page=0", 1),
+                arrayOf("", 1),
+        )
+    }
+
+    @Test(description = "Проверка нулевой старницы", dataProvider = "otherPages")
+    fun zeroPageTest(search: String, page: Int) {
+        get(DataBank.USERS_URL.get() + search).use {
             assertThat(it.code, equalTo(200))
             val users = Json.decodeFromString(Users.serializer(), it.body!!.string())
-            assertThat(users.page, equalTo(1))
-            assertThat(users.total, greaterThanOrEqualTo(users.per_page))
-            assertThat(users.per_page, equalTo(users.data.size))
+            assertThat(users.data.size, greaterThanOrEqualTo(1))
+            assertThat(users.page, equalTo(page))
         }
     }
 }

@@ -1,4 +1,4 @@
-package api.data
+package com.data
 
 enum class DataBank {
     LOGIN_ADMIN("eve.holt@reqres.in"),

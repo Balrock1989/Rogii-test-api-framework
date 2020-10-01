@@ -1,4 +1,4 @@
-package com.api.models.users
+package com.models.users
 
 import kotlinx.serialization.Serializable
 

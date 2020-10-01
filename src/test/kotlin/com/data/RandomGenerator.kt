@@ -1,4 +1,4 @@
-package com.api.data
+package com.data
 
 import net.bytebuddy.utility.RandomString
 

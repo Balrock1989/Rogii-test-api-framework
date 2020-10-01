@@ -1,11 +1,9 @@
 package com.tests
 
-import api.data.DataBank
-import api.data.getAuthBody
+import com.data.DataBank
 import com.BaseTest
-import com.api.models.register.NegativeRegister
-import com.api.models.register.PositiveRegister
-
+import com.models.register.NegativeRegister
+import com.models.register.PositiveRegister
 import kotlinx.serialization.json.Json
 import okhttp3.FormBody
 import okhttp3.RequestBody
@@ -15,7 +13,7 @@ import org.hamcrest.Matchers.notNullValue
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
-class RegisterTest: BaseTest() {
+class RegisterTest : BaseTest() {
 
     @DataProvider
     fun positiveBody(): Array<Array<RequestBody>> {
@@ -27,11 +25,11 @@ class RegisterTest: BaseTest() {
         )
     }
 
-    @Test(description = "Positive authorization", dataProvider = "positiveBody")
+    @Test(description = "Позитивная регистрация", dataProvider = "positiveBody")
     fun positiveRegisterTest(body: RequestBody) {
-        post(DataBank.REGISTER_URL.get(), body).use{
+        post(DataBank.REGISTER_URL.get(), body).use {
             assertThat(it.code, equalTo(200))
-            val response = Json.decodeFromString(PositiveRegister.serializer(), it.body!!.string())
+            val response: PositiveRegister = Json.decodeFromString(PositiveRegister.serializer(), it.body!!.string())
             assertThat(response.token.length, equalTo(17))
             assertThat(response.id, notNullValue())
         }
@@ -47,11 +45,11 @@ class RegisterTest: BaseTest() {
         )
     }
 
-    @Test(description = "Register with invalid data", dataProvider = "invalidBody")
+    @Test(description = "Проверка ошибок при неверном теле запроса", dataProvider = "invalidBody")
     fun registerWithInvalidDataTest(body: RequestBody, message: String) {
-        post(DataBank.REGISTER_URL.get(), body).use{
+        post(DataBank.REGISTER_URL.get(), body).use {
             assertThat(it.code, equalTo(400))
-            val response = Json.decodeFromString(NegativeRegister.serializer(), it.body!!.string())
+            val response: NegativeRegister = Json.decodeFromString(NegativeRegister.serializer(), it.body!!.string())
             assertThat(response.error, equalTo(message))
         }
     }
