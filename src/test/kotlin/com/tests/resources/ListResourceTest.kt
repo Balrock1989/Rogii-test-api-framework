@@ -76,9 +76,9 @@ class ListResourceTest : BaseTest() {
 
     @Test(description = "Проверка нулевой старницы", dataProvider = "otherPages")
     fun firstPageTest(search: String) {
-        val usersJson: JSONObject = get(DataBank.USERS_URL.get() + search, Status.OK.code)
-        val users = Json.decodeFromString(ListUsersModel.serializer(), usersJson.toString())
-        assertThat(users.data.size, not(equalTo(0)))
-        assertThat(users.page, equalTo(1))
+        val resourcesJson: JSONObject = get(DataBank.USERS_URL.get() + search, Status.OK.code)
+        val resources = Json.decodeFromString(ListUsersModel.serializer(), resourcesJson.toString())
+        assertThat(resources.data.size, not(equalTo(0)))
+        assertThat(resources.page, equalTo(1))
     }
 }

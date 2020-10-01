@@ -23,7 +23,7 @@ class SingleUserTest : BaseTest() {
     }
 
     @Test(description = "Валидация деталей ответа для одного пользователя", dataProvider = "positiveUsersId")
-    fun validateUsersDetailsTest(userId: Int) {
+    fun validateSingleUsersDetailsTest(userId: Int) {
         val usersJson: JSONObject = get(DataBank.USERS_URL.get() + "/$userId", Status.OK.code)
         val user = Json.decodeFromString(SingleUserModel.serializer(), usersJson.toString())
         assertThat(user.ad.company, equalTo(DataBank.AD_COMPANY.get()))
@@ -50,5 +50,20 @@ class SingleUserTest : BaseTest() {
     fun invalidBodyForSingleUserTest(userId: String) {
         val usersJson: JSONObject = get(DataBank.USERS_URL.get() + userId, Status.NOT_FOUND.code)
         assertThat("{}", equalTo(usersJson.toString()))
+    }
+
+    @Test(description = "Создание пользователя")
+    fun positiveCreateUserTest() {
+        delete(DataBank.USERS_URL.get() + "/1", Status.OK.code)
+    }
+
+    @Test(description = "Обновление пользователя")
+    fun positiveUpdateUserTest() {
+        delete(DataBank.USERS_URL.get() + "/1", Status.OK.code)
+    }
+
+    @Test(description = "Удаление пользователя")
+    fun positiveDeleteUserTest() {
+        delete(DataBank.USERS_URL.get() + "/1", Status.NO_CONTENT.code)
     }
 }

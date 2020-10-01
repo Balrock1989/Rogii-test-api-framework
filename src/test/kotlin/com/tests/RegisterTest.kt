@@ -50,5 +50,4 @@ class RegisterTest : BaseTest() {
         val response: NegativeRegisterModel = Json.decodeFromString(NegativeRegisterModel.serializer(), registerJson.toString())
         assertThat(response.error, equalTo(message))
     }
-
 }
