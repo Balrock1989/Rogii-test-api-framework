@@ -5,7 +5,7 @@ import com.api.Status
 import com.data.DataBank
 import com.models.response.resourse.SingleResourceModel
 import kotlinx.serialization.json.Json
-import org.hamcrest.MatcherAssert.*
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.json.JSONObject
 import org.testng.annotations.DataProvider
@@ -53,12 +53,12 @@ class SingleResourceTest : BaseTest() {
 
     @Test(description = "Создание ресурса")
     fun positiveCreateResourceTest() {
-        post(DataBank.RESOURCE_URL.get() + "/1","", Status.OK.code)
+        post(DataBank.RESOURCE_URL.get() + "/1", "", Status.OK.code)
     }
 
     @Test(description = "Обновление ресурса")
     fun positiveUpdateResourceTest() {
-        patch(DataBank.RESOURCE_URL.get() + "/1","", Status.OK.code)
+        patch(DataBank.RESOURCE_URL.get() + "/1", "", Status.OK.code)
     }
 
     @Test(description = "Удаление ресурса")

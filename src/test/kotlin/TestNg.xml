@@ -6,6 +6,7 @@
             <class name="com.tests.users.SingleUserTest" />
             <class name="com.tests.RegisterTest" />
             <class name="com.tests.resources.ListResourceTest" />
+            <class name="com.tests.resources.SingleResourceTest" />
         </classes>
     </test>
 </suite>

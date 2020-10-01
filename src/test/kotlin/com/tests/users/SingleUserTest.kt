@@ -5,8 +5,8 @@ import com.api.Status
 import com.data.DataBank
 import com.models.response.users.SingleUserModel
 import kotlinx.serialization.json.Json
-import org.hamcrest.MatcherAssert.*
-import org.hamcrest.Matchers.*
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.hamcrest.text.MatchesPattern.matchesPattern
 import org.json.JSONObject
 import org.testng.annotations.DataProvider
@@ -30,7 +30,7 @@ class SingleUserTest : BaseTest() {
         assertThat(user.ad.text, equalTo(DataBank.AD_TEXT.get()))
         assertThat(user.ad.url, equalTo(DataBank.AD_URL.get()))
         assertThat(user.data.id, equalTo(userId))
-        assertThat(user.data .first_name, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
+        assertThat(user.data.first_name, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
         assertThat(user.data.last_name, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
         assertThat(user.data.email, matchesPattern(DataBank.EMAIL_PATTERN.get()))
         assertThat(user.data.avatar, matchesPattern(DataBank.URL_PATTERN.get()))
@@ -54,12 +54,12 @@ class SingleUserTest : BaseTest() {
 
     @Test(description = "Создание пользователя")
     fun positiveCreateUserTest() {
-        delete(DataBank.USERS_URL.get() + "/1", Status.OK.code)
+        post(DataBank.USERS_URL.get() + "/1", "", Status.OK.code)
     }
 
     @Test(description = "Обновление пользователя")
     fun positiveUpdateUserTest() {
-        delete(DataBank.USERS_URL.get() + "/1", Status.OK.code)
+        patch(DataBank.USERS_URL.get() + "/1", "", Status.OK.code)
     }
 
     @Test(description = "Удаление пользователя")
