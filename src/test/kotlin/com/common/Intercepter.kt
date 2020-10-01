@@ -21,15 +21,16 @@ internal class LoggingInterceptor : Interceptor {
             bodyString = response.body!!.string()
         }
         val time = (t2 - t1) / 1e6
-        if (request.method.equals("GET")) {
-            logger.info(java.lang.String.format("GET $F_REQUEST_WITHOUT_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, response.code, stringifyResponseBody(bodyString)))
-        } else if (request.method.equals("POST")) {
-            logger.info(java.lang.String.format("POST $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, stringifyRequestBody(request), response.code, stringifyResponseBody(bodyString)))
-        } else if (request.method.equals("PUT")) {
-            logger.info(java.lang.String.format("PUT $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, request.body.toString(), response.code, stringifyResponseBody(bodyString)))
-        } else if (request.method.equals("DELETE")) {
-            logger.info(java.lang.String.format("DELETE $F_REQUEST_WITHOUT_BODY$F_RESPONSE_WITHOUT_BODY", request.url, time, request.headers, response.code))
+        when (request.method) {
+            "GET" -> logger.info(java.lang.String.format("GET $F_REQUEST_WITHOUT_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, response.code, stringifyResponseBody(bodyString)))
+            "POST" -> logger.info(java.lang.String.format("POST $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, stringifyRequestBody(request), response.code, stringifyResponseBody(bodyString)))
+            "PUT" -> logger.info(java.lang.String.format("PUT $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, request.body.toString(), response.code, stringifyResponseBody(bodyString)))
+            "DELETE" -> logger.info(java.lang.String.format("DELETE $F_REQUEST_WITHOUT_BODY$F_RESPONSE_WITHOUT_BODY", request.url, time, request.headers, response.code))
+            else -> {
+                logger.info("Unknown request: " + request.method)
+            }
         }
+
         return if (response.body != null) {
             val body: ResponseBody = bodyString!!.toResponseBody(contentType)
             response.newBuilder().body(body).build()
@@ -38,7 +39,7 @@ internal class LoggingInterceptor : Interceptor {
         }
     }
 
-    fun stringifyResponseBody(responseBody: String?): String? {
+    private fun stringifyResponseBody(responseBody: String?): String? {
         return JsonWriter.formatJson(responseBody)
     }
 
@@ -61,7 +62,7 @@ internal class LoggingInterceptor : Interceptor {
                 copy.body!!.writeTo(buffer)
                 buffer.readUtf8()
             } catch (e: IOException) {
-                "did not work"
+                "error: $e"
             }
         }
     }
