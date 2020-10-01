@@ -1,10 +1,10 @@
-package com.models.register
+package com.models.response.register
 
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class PositiveRegister(
-        @Required val id: Int = 0,
-        @Required val token: String = "",
+        @Required val id: Int,
+        @Required val token: String,
 )

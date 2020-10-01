@@ -1,18 +1,21 @@
 package com.api
 
 import com.common.LoggingInterceptor
-import com.data.BodyHelper
+import com.models.response.users.Data
+import io.qameta.allure.Step
 import io.qameta.allure.okhttp3.AllureOkHttp3
 import okhttp3.Headers
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
+import java.util.stream.Collectors
 
 
-open class ApiRequestHelper : BodyHelper() {
+open class ApiRequestHelper {
     val JSON: MediaType = "application/json; charset=utf-8".toMediaType()
     val headers: Headers = Headers.Builder()
-            .add("Content-Type", "application/json;charset=UTF-8")
             .add("Accept-Encoding", "identity")
             .build()
     lateinit var client: OkHttpClient
@@ -27,5 +30,16 @@ open class ApiRequestHelper : BodyHelper() {
         client = OkHttpClient.Builder()
                 .addInterceptor(AllureOkHttp3())
                 .build()
+    }
+
+    @Step("Проверка кода ответа сервера")
+    fun checkStatus(code: Int, expectedCode: Int) {
+        assertThat(code, equalTo(expectedCode))
+    }
+
+    @Step("Проверка сортировки пользователей по Id")
+    fun checkSortedUsersById(users: List<Data>) {
+        val usersId: List<Int> = users.stream().map { user -> user.id }.collect(Collectors.toList())
+        assertThat(usersId, equalTo(usersId.sorted()))
     }
 }
