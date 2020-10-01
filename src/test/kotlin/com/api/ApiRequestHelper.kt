@@ -1,7 +1,7 @@
 package com.api
 
 import com.common.LoggingInterceptor
-import com.models.response.users.Data
+import com.models.response.users.DataModel
 import io.qameta.allure.Step
 import io.qameta.allure.okhttp3.AllureOkHttp3
 import okhttp3.Headers
@@ -38,7 +38,7 @@ open class ApiRequestHelper {
     }
 
     @Step("Проверка сортировки пользователей по Id")
-    fun checkSortedUsersById(users: List<Data>) {
+    fun checkSortedUsersById(users: List<DataModel>) {
         val usersId: List<Int> = users.stream().map { user -> user.id }.collect(Collectors.toList())
         assertThat(usersId, equalTo(usersId.sorted()))
     }

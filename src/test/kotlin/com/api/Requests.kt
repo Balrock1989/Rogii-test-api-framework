@@ -4,7 +4,6 @@ import io.qameta.allure.Step
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import org.json.JSONObject
 
 open class Requests : ApiRequestHelper() {
@@ -17,9 +16,10 @@ open class Requests : ApiRequestHelper() {
                 .headers(headers)
                 .post(requestBody)
                 .build()
-        val response: Response = client.newCall(request).execute()
-        checkStatus(response.code, expectedCode)
-        return JSONObject(response.body!!.string())
+        client.newCall(request).execute().use {
+            checkStatus(it.code, expectedCode)
+            return JSONObject(it.body!!.string())
+        }
     }
 
     @Step("GET запрос")
@@ -29,8 +29,9 @@ open class Requests : ApiRequestHelper() {
                 .headers(headers)
                 .get()
                 .build()
-        val response: Response = client.newCall(request).execute()
-        checkStatus(response.code, expectedCode)
-        return JSONObject(response.body!!.string())
+        client.newCall(request).execute().use {
+            checkStatus(it.code, expectedCode)
+            return JSONObject(it.body!!.string())
+        }
     }
 }

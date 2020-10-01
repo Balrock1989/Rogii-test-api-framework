@@ -7,7 +7,10 @@ enum class DataBank {
     USERS_URL("https://reqres.in/api/users"),
     AD_COMPANY("StatusCode Weekly"),
     AD_TEXT("A weekly newsletter focusing on software development, infrastructure, the server, performance, and the stack end of things."),
-    AD_URL("http://statuscode.org/");
+    AD_URL("http://statuscode.org/"),
+    NAME_PATTERN("[A-Z]\\D{2,20}"),
+    EMAIL_PATTERN("^\\w*\\.\\w*@\\w*.in"),
+    URL_PATTERN("^http?s:\\/\\/\\S*\\.jpg");
 
     private lateinit var array: List<String>
     private lateinit var value: String

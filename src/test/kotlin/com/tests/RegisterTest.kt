@@ -4,8 +4,8 @@ import com.BaseTest
 import com.api.Status
 import com.data.DataBank
 import com.models.request.RegisterBody
-import com.models.response.register.NegativeRegister
-import com.models.response.register.PositiveRegister
+import com.models.response.register.NegativeRegisterModel
+import com.models.response.register.PositiveRegisterModel
 import kotlinx.serialization.json.Json
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -29,7 +29,7 @@ class RegisterTest : BaseTest() {
     @Test(description = "Позитивная регистрация", dataProvider = "positiveBody")
     fun positiveRegisterTest(body: String) {
         val registerJson: JSONObject = post(DataBank.REGISTER_URL.get(), body, Status.OK.code)
-        val response: PositiveRegister = Json.decodeFromString(PositiveRegister.serializer(), registerJson.toString())
+        val response: PositiveRegisterModel = Json.decodeFromString(PositiveRegisterModel.serializer(), registerJson.toString())
         assertThat(response.token.length, equalTo(17))
         assertThat(response.id, notNullValue())
     }
@@ -47,7 +47,7 @@ class RegisterTest : BaseTest() {
     @Test(description = "Проверка ошибок при неверном теле запроса", dataProvider = "invalidBody")
     fun registerWithInvalidDataTest(body: String, message: String) {
         val registerJson: JSONObject = post(DataBank.REGISTER_URL.get(), body, Status.BAD_REQUEST.code)
-        val response: NegativeRegister = Json.decodeFromString(NegativeRegister.serializer(), registerJson.toString())
+        val response: NegativeRegisterModel = Json.decodeFromString(NegativeRegisterModel.serializer(), registerJson.toString())
         assertThat(response.error, equalTo(message))
     }
 

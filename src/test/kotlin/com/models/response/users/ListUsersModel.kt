@@ -4,9 +4,9 @@ import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Users(
-        @Required val ad: Ad,
-        @Required val data: List<Data>,
+data class ListUsersModel(
+        @Required val ad: AdModel,
+        @Required val data: List<DataModel>,
         @Required val page: Int,
         @Required val per_page: Int,
         @Required val total: Int,

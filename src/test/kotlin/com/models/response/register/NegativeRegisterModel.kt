@@ -4,6 +4,6 @@ import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class NegativeRegister(
+data class NegativeRegisterModel(
         @Required val error: String
 )

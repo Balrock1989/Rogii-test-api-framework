@@ -4,7 +4,7 @@ import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PositiveRegister(
+data class PositiveRegisterModel(
         @Required val id: Int,
         @Required val token: String,
 )
