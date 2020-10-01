@@ -1,5 +1,6 @@
 package com.common
 
+import com.cedarsoftware.util.io.JsonWriter
 import okhttp3.*
 import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.internal.concurrent.TaskRunner.Companion.logger
@@ -38,7 +39,7 @@ internal class LoggingInterceptor : Interceptor {
     }
 
     fun stringifyResponseBody(responseBody: String?): String? {
-        return responseBody
+        return JsonWriter.formatJson(responseBody)
     }
 
     companion object {
