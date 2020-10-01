@@ -1,6 +1,7 @@
 package com.tests
 
 import com.BaseTest
+import com.api.Status
 import com.data.DataBank
 import com.models.response.users.Users
 import kotlinx.serialization.json.Json
@@ -24,7 +25,7 @@ class UsersTest : BaseTest() {
     @Test(description = "Валидация списка пользователей", dataProvider = "positivePages")
     fun validateUsersDetailsTest(page: Int) {
         get(DataBank.USERS_URL.get() + "?page=$page").use {
-            checkStatus(it.code, 200)
+            checkStatus(it.code, Status.OK.code)
             val users = Json.decodeFromString(Users.serializer(), it.body!!.string())
             assertThat(users.page, equalTo(page))
             assertThat(users.total, greaterThanOrEqualTo(users.per_page))
@@ -55,7 +56,7 @@ class UsersTest : BaseTest() {
     @Test(description = "Проверка пустых страниц", dataProvider = "emptyPages")
     fun otherPagesTest(page: Int) {
         get(DataBank.USERS_URL.get() + "?page=$page").use {
-            checkStatus(it.code, 200)
+            checkStatus(it.code, Status.OK.code)
             val users = Json.decodeFromString(Users.serializer(), it.body!!.string())
             assertThat(users.data, hasSize(0))
             assertThat(users.ad.company, equalTo(DataBank.AD_COMPANY.get()))
@@ -78,7 +79,7 @@ class UsersTest : BaseTest() {
     @Test(description = "Проверка нулевой старницы", dataProvider = "otherPages")
     fun zeroPageTest(search: String, page: Int) {
         get(DataBank.USERS_URL.get() + search).use {
-            checkStatus(it.code, 200)
+            checkStatus(it.code, Status.OK.code)
             val users = Json.decodeFromString(Users.serializer(), it.body!!.string())
             assertThat(users.data.size, not(equalTo(0)))
             assertThat(users.page, equalTo(page))
