@@ -1,4 +1,4 @@
-package com.tests
+package com.tests.users
 
 import com.BaseTest
 import com.api.Status
@@ -30,8 +30,8 @@ class SingleUserTest : BaseTest() {
         assertThat(user.ad.text, equalTo(DataBank.AD_TEXT.get()))
         assertThat(user.ad.url, equalTo(DataBank.AD_URL.get()))
         assertThat(user.data.id, equalTo(userId))
-        assertThat(user.data .first_name, matchesPattern(DataBank.NAME_PATTERN.get()))
-        assertThat(user.data.last_name, matchesPattern(DataBank.NAME_PATTERN.get()))
+        assertThat(user.data .first_name, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
+        assertThat(user.data.last_name, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
         assertThat(user.data.email, matchesPattern(DataBank.EMAIL_PATTERN.get()))
         assertThat(user.data.avatar, matchesPattern(DataBank.URL_PATTERN.get()))
     }

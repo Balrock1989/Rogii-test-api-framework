@@ -6,11 +6,15 @@ enum class DataBank {
     PASSWORD_ADMIN("pistol"),
     REGISTER_URL("https://reqres.in/api/register"),
     USERS_URL("https://reqres.in/api/users"),
+    RESOURCE_URL("https://reqres.in/api/unknown"),
     AD_COMPANY("StatusCode Weekly"),
     AD_TEXT("A weekly newsletter focusing on software development, infrastructure, the server, performance, and the stack end of things."),
     AD_URL("http://statuscode.org/"),
-    NAME_PATTERN("[A-Z]\\D{2,20}"),
+    USER_NAME_PATTERN("[A-Z]\\D{2,20}"),
+    RESOURCE_NAME_PATTERN("[a-z]\\D{2,20}"),
     EMAIL_PATTERN("^\\w*\\.\\w*@\\w*.in"),
+    COLOR_PATTERN("#[0-9A-Z]{6}"),
+    PHONE_PATTERN("\\d{2}-\\d{4}"),
     URL_PATTERN("^http?s:\\/\\/\\S*\\.jpg");
 
     private lateinit var array: List<String>

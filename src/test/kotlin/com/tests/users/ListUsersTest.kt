@@ -1,4 +1,4 @@
-package com.tests
+package com.tests.users
 
 import com.BaseTest
 import com.api.Status
@@ -37,8 +37,8 @@ class ListUsersTest : BaseTest() {
         checkSortedUsersById(users.data)
         users.data.forEach { user ->
             assertThat(user.id, greaterThanOrEqualTo(1))
-            assertThat(user.first_name, matchesPattern(DataBank.NAME_PATTERN.get()))
-            assertThat(user.last_name, matchesPattern(DataBank.NAME_PATTERN.get()))
+            assertThat(user.first_name, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
+            assertThat(user.last_name, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
             assertThat(user.email, matchesPattern(DataBank.EMAIL_PATTERN.get()))
             assertThat(user.avatar, matchesPattern(DataBank.URL_PATTERN.get()))
         }
@@ -67,18 +67,19 @@ class ListUsersTest : BaseTest() {
     }
 
     @DataProvider
-    fun otherPages(): Array<Array<Any>> {
+    fun otherPages(): Array<Array<String>> {
         return arrayOf(
-                arrayOf("?page=0", 1),
-                arrayOf("", 1),
+                arrayOf("?page=0"),
+                arrayOf("?page=two"),
+                arrayOf(""),
         )
     }
 
     @Test(description = "Проверка нулевой старницы", dataProvider = "otherPages")
-    fun zeroPageTest(search: String, page: Int) {
+    fun firstPageTest(search: String) {
         val usersJson: JSONObject = get(DataBank.USERS_URL.get() + search, Status.OK.code)
         val users = Json.decodeFromString(ListUsersModel.serializer(), usersJson.toString())
         assertThat(users.data.size, not(equalTo(0)))
-        assertThat(users.page, equalTo(page))
+        assertThat(users.page, equalTo(1))
     }
 }

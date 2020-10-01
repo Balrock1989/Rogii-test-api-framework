@@ -1,4 +1,4 @@
-package com.models.response.users
+package com.models.response.general
 
 import kotlinx.serialization.Serializable
 import org.testng.annotations.Optional

@@ -2,9 +2,10 @@
     <suite name="Rogii" parallel="methods" thread-count="1">
     <test name="RogiiTests">
         <classes>
-            <class name="com.tests.ListUsersTest" />
-            <class name="com.tests.SingleUserTest" />
+            <class name="com.tests.users.ListUsersTest" />
+            <class name="com.tests.users.SingleUserTest" />
             <class name="com.tests.RegisterTest" />
+            <class name="com.tests.resources.ListResourceTest" />
         </classes>
     </test>
 </suite>

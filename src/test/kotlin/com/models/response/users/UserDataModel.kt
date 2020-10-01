@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import org.testng.annotations.Optional
 
 @Serializable
-data class DataModel(
+data class UserDataModel(
         @Optional val avatar: String,
         @Required val email: String,
         @Required val first_name: String,
