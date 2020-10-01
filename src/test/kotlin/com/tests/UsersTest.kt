@@ -3,13 +3,16 @@ package com.tests
 import com.BaseTest
 import com.api.Status
 import com.data.DataBank
+import com.jayway.jsonpath.JsonPath
 import com.models.response.users.Users
 import kotlinx.serialization.json.Json
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.hamcrest.text.MatchesPattern.matchesPattern
+import org.json.JSONObject
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
+
 
 class UsersTest : BaseTest() {
     private val usersPerPage: Int = 6
@@ -24,23 +27,22 @@ class UsersTest : BaseTest() {
 
     @Test(description = "Валидация списка пользователей", dataProvider = "positivePages")
     fun validateUsersDetailsTest(page: Int) {
-        get(DataBank.USERS_URL.get() + "?page=$page").use {
-            checkStatus(it.code, Status.OK.code)
-            val users = Json.decodeFromString(Users.serializer(), it.body!!.string())
-            assertThat(users.page, equalTo(page))
-            assertThat(users.total, greaterThanOrEqualTo(users.per_page))
-            assertThat(users.per_page, equalTo(usersPerPage))
-            assertThat(users.ad.company, equalTo(DataBank.AD_COMPANY.get()))
-            assertThat(users.ad.text, equalTo(DataBank.AD_TEXT.get()))
-            assertThat(users.ad.url, equalTo(DataBank.AD_URL.get()))
-            checkSortedUsersById(users.data)
-            users.data.forEach { user ->
-                assertThat(user.id, greaterThanOrEqualTo(1))
-                assertThat(user.first_name, matchesPattern("[A-Z]\\D{2,20}"))
-                assertThat(user.last_name, matchesPattern("[A-Z]\\D{2,20}"))
-                assertThat(user.email, matchesPattern("^\\w*\\.\\w*@\\w*.in"))
-                assertThat(user.avatar, matchesPattern("^http?s:\\/\\/\\S*\\.jpg"))
-            }
+        val usersJson: JSONObject = get(DataBank.USERS_URL.get() + "?page=$page", Status.OK.code)
+        val userNames: List<String> = JsonPath.parse(usersJson.toString()).read("$..first_name")
+        val users = Json.decodeFromString(Users.serializer(), usersJson.toString())
+        assertThat(users.page, equalTo(page))
+        assertThat(users.total, greaterThanOrEqualTo(users.per_page))
+        assertThat(users.per_page, equalTo(usersPerPage))
+        assertThat(users.ad.company, equalTo(DataBank.AD_COMPANY.get()))
+        assertThat(users.ad.text, equalTo(DataBank.AD_TEXT.get()))
+        assertThat(users.ad.url, equalTo(DataBank.AD_URL.get()))
+        checkSortedUsersById(users.data)
+        users.data.forEach { user ->
+            assertThat(user.id, greaterThanOrEqualTo(1))
+            assertThat(user.first_name, matchesPattern("[A-Z]\\D{2,20}"))
+            assertThat(user.last_name, matchesPattern("[A-Z]\\D{2,20}"))
+            assertThat(user.email, matchesPattern("^\\w*\\.\\w*@\\w*.in"))
+            assertThat(user.avatar, matchesPattern("^http?s:\\/\\/\\S*\\.jpg"))
         }
     }
 
@@ -55,17 +57,15 @@ class UsersTest : BaseTest() {
 
     @Test(description = "Проверка пустых страниц", dataProvider = "emptyPages")
     fun otherPagesTest(page: Int) {
-        get(DataBank.USERS_URL.get() + "?page=$page").use {
-            checkStatus(it.code, Status.OK.code)
-            val users = Json.decodeFromString(Users.serializer(), it.body!!.string())
-            assertThat(users.data, hasSize(0))
-            assertThat(users.ad.company, equalTo(DataBank.AD_COMPANY.get()))
-            assertThat(users.ad.text, equalTo(DataBank.AD_TEXT.get()))
-            assertThat(users.ad.url, equalTo(DataBank.AD_URL.get()))
-            assertThat(users.per_page, equalTo(usersPerPage))
-            assertThat(users.page, equalTo(page))
-            assertThat(users.total, greaterThanOrEqualTo(0))
-        }
+        val usersJson: JSONObject = get(DataBank.USERS_URL.get() + "?page=$page", Status.OK.code)
+        val users = Json.decodeFromString(Users.serializer(), usersJson.toString())
+        assertThat(users.data, hasSize(0))
+        assertThat(users.ad.company, equalTo(DataBank.AD_COMPANY.get()))
+        assertThat(users.ad.text, equalTo(DataBank.AD_TEXT.get()))
+        assertThat(users.ad.url, equalTo(DataBank.AD_URL.get()))
+        assertThat(users.per_page, equalTo(usersPerPage))
+        assertThat(users.page, equalTo(page))
+        assertThat(users.total, greaterThanOrEqualTo(0))
     }
 
     @DataProvider
@@ -78,11 +78,9 @@ class UsersTest : BaseTest() {
 
     @Test(description = "Проверка нулевой старницы", dataProvider = "otherPages")
     fun zeroPageTest(search: String, page: Int) {
-        get(DataBank.USERS_URL.get() + search).use {
-            checkStatus(it.code, Status.OK.code)
-            val users = Json.decodeFromString(Users.serializer(), it.body!!.string())
-            assertThat(users.data.size, not(equalTo(0)))
-            assertThat(users.page, equalTo(page))
-        }
+        val usersJson: JSONObject = get(DataBank.USERS_URL.get() + search, Status.OK.code)
+        val users = Json.decodeFromString(Users.serializer(), usersJson.toString())
+        assertThat(users.data.size, not(equalTo(0)))
+        assertThat(users.page, equalTo(page))
     }
 }
