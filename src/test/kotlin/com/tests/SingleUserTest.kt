@@ -17,24 +17,38 @@ class SingleUserTest : BaseTest() {
     @DataProvider
     fun positiveUsersId(): Array<Array<Int>> {
         return arrayOf(
-                arrayOf(0),
                 arrayOf(1),
-                arrayOf(12),
-                arrayOf(13),
+                arrayOf(12)
         )
     }
 
-    @Test(description = "Валидация деталей ответа для одного пользовател", dataProvider = "positiveUsersId")
+    @Test(description = "Валидация деталей ответа для одного пользователя", dataProvider = "positiveUsersId")
     fun validateUsersDetailsTest(userId: Int) {
         val usersJson: JSONObject = get(DataBank.USERS_URL.get() + "/$userId", Status.OK.code)
         val user = Json.decodeFromString(SingleUserModel.serializer(), usersJson.toString())
         assertThat(user.ad.company, equalTo(DataBank.AD_COMPANY.get()))
         assertThat(user.ad.text, equalTo(DataBank.AD_TEXT.get()))
         assertThat(user.ad.url, equalTo(DataBank.AD_URL.get()))
-        assertThat(user.data.id, greaterThanOrEqualTo(1))
-        assertThat(user.data.first_name, matchesPattern(DataBank.NAME_PATTERN.get()))
+        assertThat(user.data.id, equalTo(userId))
+        assertThat(user.data .first_name, matchesPattern(DataBank.NAME_PATTERN.get()))
         assertThat(user.data.last_name, matchesPattern(DataBank.NAME_PATTERN.get()))
         assertThat(user.data.email, matchesPattern(DataBank.EMAIL_PATTERN.get()))
         assertThat(user.data.avatar, matchesPattern(DataBank.URL_PATTERN.get()))
+    }
+
+    @DataProvider
+    fun invalidUsersId(): Array<Array<String>> {
+        return arrayOf(
+                arrayOf("/0"),
+                arrayOf("/13"),
+                arrayOf("/-1"),
+                arrayOf("/User"),
+        )
+    }
+
+    @Test(description = "Валидация деталей ответа для одного пользователя", dataProvider = "invalidUsersId")
+    fun invalidBodyForSingleUserTest(userId: String) {
+        val usersJson: JSONObject = get(DataBank.USERS_URL.get() + userId, Status.NOT_FOUND.code)
+        assertThat("{}", equalTo(usersJson.toString()))
     }
 }
