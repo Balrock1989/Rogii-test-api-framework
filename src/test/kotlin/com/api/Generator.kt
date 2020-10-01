@@ -10,6 +10,7 @@ import io.qameta.allure.Step
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
 
+/*** Генератор тестовых данных*/
 open class Generator : Requests(), RandomGenerator {
 
     @Step("Регистрация в системе нового пользователя")
@@ -17,7 +18,6 @@ open class Generator : Requests(), RandomGenerator {
         val usersJson: JSONObject = post(DataBank.REGISTER_URL.get(), RegisterBody(login, password).getBody(), Status.OK.code)
         return Json.decodeFromString(PositiveRegisterModel.serializer(), usersJson.toString())
     }
-
 
     @Step("Получить список всех пользователей с учетом пагинации")
     fun getUsersInPage(page: Int): ListUsersModel {

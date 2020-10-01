@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+    <suite name="Rogii" parallel="methods" thread-count="1">
+    <test name="RogiiTests">
+        <classes>
+            <class name="com.tests.ListUsersTest" />
+            <class name="com.tests.SingleUserTest" />
+            <class name="com.tests.RegisterTest" />
+        </classes>
+    </test>
+</suite>

@@ -1,5 +1,6 @@
 package com.data
 
+/*** Класс с данными*/
 enum class DataBank {
     LOGIN_ADMIN("eve.holt@reqres.in"),
     PASSWORD_ADMIN("pistol"),

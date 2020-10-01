@@ -12,25 +12,16 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import java.util.stream.Collectors
 
-
+/*** Вспомогательные методы для работы с API*/
 open class ApiRequestHelper {
-    val JSON: MediaType = "application/json; charset=utf-8".toMediaType()
+    val mediaType: MediaType = "application/json; charset=utf-8".toMediaType()
     val headers: Headers = Headers.Builder()
             .add("Accept-Encoding", "identity")
             .build()
-    lateinit var client: OkHttpClient
-    fun initOkHTTPClientWithLogger() {
-        client = OkHttpClient.Builder()
-                .addNetworkInterceptor(LoggingInterceptor())
-                .addInterceptor(AllureOkHttp3())
-                .build()
-    }
-
-    fun initOkHTTPClient() {
-        client = OkHttpClient.Builder()
-                .addInterceptor(AllureOkHttp3())
-                .build()
-    }
+    val client: OkHttpClient = OkHttpClient.Builder()
+            .addNetworkInterceptor(LoggingInterceptor())
+            .addInterceptor(AllureOkHttp3())
+            .build()
 
     @Step("Проверка кода ответа сервера")
     fun checkStatus(code: Int, expectedCode: Int) {

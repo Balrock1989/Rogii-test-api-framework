@@ -7,6 +7,7 @@ import okhttp3.internal.concurrent.TaskRunner.Companion.logger
 import okio.Buffer
 import java.io.IOException
 
+/*** Перехватчик событий для логирования запросов и ответов*/
 internal class LoggingInterceptor : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {

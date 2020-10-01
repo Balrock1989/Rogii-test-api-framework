@@ -6,11 +6,12 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
+/*** Реализация запросов*/
 open class Requests : ApiRequestHelper() {
 
     @Step("POST запрос")
     fun post(url: String, body: String, expectedCode: Int): JSONObject {
-        val requestBody: RequestBody = body.toRequestBody(JSON)
+        val requestBody: RequestBody = body.toRequestBody(mediaType)
         val request = Request.Builder()
                 .url(url)
                 .headers(headers)

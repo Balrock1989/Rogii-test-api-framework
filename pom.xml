@@ -10,19 +10,7 @@
     <properties>
         <kotlin.version>1.4.10</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <aspectj.version>1.9.1</aspectj.version>
-        <logger>false</logger>
-        <site.url>https://reqres.in/api/</site.url>
     </properties>
-
-    <profiles>
-        <profile>
-            <id>logger</id>
-            <properties>
-                <logger>true</logger>
-            </properties>
-        </profile>
-    </profiles>
 
     <dependencies>
         <dependency>
@@ -169,11 +157,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M4</version>
                 <configuration>
-                    <argLine>
-                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
-                    </argLine>
                     <systemPropertyVariables>
-                        <logger>${logger}</logger>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
