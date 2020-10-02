@@ -1,8 +1,8 @@
-package com.api
+package com.data
 
 
-import com.data.DataBank
-import com.data.RandomGenerator
+import com.api.Requests
+import com.api.Status
 import com.models.request.RegisterBody
 import com.models.response.register.PositiveRegisterModel
 import com.models.response.users.ListUsersModel
@@ -11,7 +11,7 @@ import kotlinx.serialization.json.Json
 import org.json.JSONObject
 
 /*** Генератор тестовых данных*/
-open class Generator : Requests(), RandomGenerator {
+open class DataGenerator : Requests(), RandomGenerator {
 
     @Step("Регистрация в системе нового пользователя")
     fun registerNewUser(login: String, password: String): PositiveRegisterModel {

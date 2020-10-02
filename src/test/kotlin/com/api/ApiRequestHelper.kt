@@ -1,30 +1,16 @@
 package com.api
 
-import com.common.LoggingInterceptor
 import com.models.response.resourse.ResourceDataModel
 import com.models.response.users.UserDataModel
 import io.qameta.allure.Step
-import io.qameta.allure.okhttp3.AllureOkHttp3
-import okhttp3.Headers
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import java.util.stream.Collectors
 
 
 /*** Вспомогательные методы для работы с API*/
-open class ApiRequestHelper {
-    val mediaType: MediaType = "application/json; charset=utf-8".toMediaType()
-    val headers: Headers = Headers.Builder()
-            .add("Accept-Encoding", "identity")
-            .build()
+open class ApiRequestHelper : HTTPClient() {
 
-    val client: OkHttpClient = OkHttpClient.Builder()
-            .addNetworkInterceptor(LoggingInterceptor())
-            .addInterceptor(AllureOkHttp3())
-            .build()
 
     @Step("Проверка кода ответа сервера")
     fun checkStatus(code: Int, expectedCode: Int) {

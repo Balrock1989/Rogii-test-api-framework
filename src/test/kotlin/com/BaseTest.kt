@@ -1,12 +1,12 @@
 package com
 
-import com.api.Generator
+import com.data.DataGenerator
 import okhttp3.internal.concurrent.TaskRunner.Companion.logger
 import org.testng.annotations.AfterSuite
 import org.testng.annotations.BeforeMethod
 import java.lang.reflect.Method
 
-open class BaseTest : Generator() {
+open class BaseTest : DataGenerator() {
 
     /*** Логирование названия теста*/
     @BeforeMethod

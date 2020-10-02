@@ -8,6 +8,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <base.url>https://reqres.in/api</base.url>
         <kotlin.version>1.4.10</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -158,7 +159,7 @@
                 <version>3.0.0-M4</version>
                 <configuration>
                     <systemPropertyVariables>
-                        <base.url>https://reqres.in/api</base.url>
+                        <base.url>${base.url}</base.url>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
