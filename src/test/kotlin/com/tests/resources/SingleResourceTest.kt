@@ -3,6 +3,8 @@ package com.tests.resources
 import com.BaseTest
 import com.api.Status
 import com.data.DataBank
+import com.models.request.resource.CreateResourceModel
+import com.models.request.resource.UpdateResourceModel
 import com.models.response.resourse.SingleResourceModel
 import kotlinx.serialization.json.Json
 import org.hamcrest.MatcherAssert.assertThat
@@ -53,12 +55,12 @@ class SingleResourceTest : BaseTest() {
 
     @Test(description = "Создание ресурса")
     fun positiveCreateResourceTest() {
-        post(DataBank.RESOURCE_URL.get() + "/1", "", Status.OK.code)
+        post(DataBank.RESOURCE_URL.get() + "/1", CreateResourceModel("morpheus", "leader").getBody(), Status.CREATED.code)
     }
 
     @Test(description = "Обновление ресурса")
     fun positiveUpdateResourceTest() {
-        patch(DataBank.RESOURCE_URL.get() + "/1", "", Status.OK.code)
+        patch(DataBank.RESOURCE_URL.get() + "/1", UpdateResourceModel("morpheus", "zion resident").getBody(), Status.OK.code)
     }
 
     @Test(description = "Удаление ресурса")

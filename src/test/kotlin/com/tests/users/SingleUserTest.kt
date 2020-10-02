@@ -3,6 +3,8 @@ package com.tests.users
 import com.BaseTest
 import com.api.Status
 import com.data.DataBank
+import com.models.request.users.CreateUserModel
+import com.models.request.users.UpdateUserModel
 import com.models.response.users.SingleUserModel
 import kotlinx.serialization.json.Json
 import org.hamcrest.MatcherAssert.assertThat
@@ -54,12 +56,12 @@ class SingleUserTest : BaseTest() {
 
     @Test(description = "Создание пользователя")
     fun positiveCreateUserTest() {
-        post(DataBank.USERS_URL.get() + "/1", "", Status.OK.code)
+        post(DataBank.USERS_URL.get() + "/1", CreateUserModel("morpheus", "leader").getBody(), Status.CREATED.code)
     }
 
     @Test(description = "Обновление пользователя")
     fun positiveUpdateUserTest() {
-        patch(DataBank.USERS_URL.get() + "/1", "", Status.OK.code)
+        patch(DataBank.USERS_URL.get() + "/1", UpdateUserModel("morpheus", "zion resident").getBody(), Status.OK.code)
     }
 
     @Test(description = "Удаление пользователя")
