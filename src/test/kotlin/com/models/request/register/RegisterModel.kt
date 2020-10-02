@@ -1,16 +1,16 @@
-package com.models.request
+package com.models.request.register
 
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 @Serializable
-class RegisterBody(
+class RegisterModel(
         @Required val email: String,
         @Required val password: String,
 
         ) {
     fun getBody(): String {
-        return Json.encodeToString(serializer(), RegisterBody(email, password))
+        return Json.encodeToString(serializer(), RegisterModel(email, password))
     }
 }

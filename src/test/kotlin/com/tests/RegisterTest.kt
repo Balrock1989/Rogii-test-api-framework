@@ -3,7 +3,7 @@ package com.tests
 import com.BaseTest
 import com.api.Status
 import com.data.DataBank
-import com.models.request.RegisterBody
+import com.models.request.register.RegisterModel
 import com.models.response.register.NegativeRegisterModel
 import com.models.response.register.PositiveRegisterModel
 import kotlinx.serialization.json.Json
@@ -19,10 +19,10 @@ class RegisterTest : BaseTest() {
     @DataProvider
     fun positiveBody(): Array<Array<String>> {
         return arrayOf(
-                arrayOf(RegisterBody(DataBank.LOGIN_ADMIN.get(), DataBank.PASSWORD_ADMIN.get()).getBody()),
-                arrayOf(RegisterBody(DataBank.LOGIN_ADMIN.get(), "1").getBody()),
-                arrayOf(RegisterBody(DataBank.LOGIN_ADMIN.get(), "numbers123456789").getBody()),
-                arrayOf(RegisterBody(DataBank.LOGIN_ADMIN.get(), getRandomString(200)).getBody()),
+                arrayOf(RegisterModel(DataBank.LOGIN_ADMIN.get(), DataBank.PASSWORD_ADMIN.get()).getBody()),
+                arrayOf(RegisterModel(DataBank.LOGIN_ADMIN.get(), "1").getBody()),
+                arrayOf(RegisterModel(DataBank.LOGIN_ADMIN.get(), "numbers123456789").getBody()),
+                arrayOf(RegisterModel(DataBank.LOGIN_ADMIN.get(), getRandomString(200)).getBody()),
         )
     }
 
@@ -37,9 +37,9 @@ class RegisterTest : BaseTest() {
     @DataProvider
     fun invalidBody(): Array<Array<Any>> {
         return arrayOf(
-                arrayOf(RegisterBody("OtherLogin@reqres.in", DataBank.PASSWORD_ADMIN.get()).getBody(), "Note: Only defined users succeed registration"),
-                arrayOf(RegisterBody(DataBank.LOGIN_ADMIN.get(), "").getBody(), "Missing password"),
-                arrayOf(RegisterBody("", getRandomString(15)).getBody(), "Missing email or username"),
+                arrayOf(RegisterModel("OtherLogin@reqres.in", DataBank.PASSWORD_ADMIN.get()).getBody(), "Note: Only defined users succeed registration"),
+                arrayOf(RegisterModel(DataBank.LOGIN_ADMIN.get(), "").getBody(), "Missing password"),
+                arrayOf(RegisterModel("", getRandomString(15)).getBody(), "Missing email or username"),
                 arrayOf("", "Missing email or username"),
         )
     }
