@@ -4,18 +4,37 @@ import com.BaseTest
 import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
+import com.jayway.jsonpath.JsonPath.parse
+import com.models.request.users.UserModel
 import com.models.response.users.ListUsersModel
 import kotlinx.serialization.json.Json
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.hamcrest.text.MatchesPattern.matchesPattern
 import org.json.JSONObject
+import org.testng.annotations.BeforeClass
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
 
 class ListUsersTest : BaseTest() {
+    private lateinit var user1: UserModel
+    private lateinit var user2: UserModel
+    private lateinit var user3: UserModel
+    private lateinit var user4: UserModel
+    private lateinit var user5: UserModel
+    private lateinit var user6: UserModel
     private val usersPerPage: Int = 6
+
+    @BeforeClass
+    fun prepare() {
+        user1 = UserModel(1, "george.bluth@reqres.in", "George", "Bluth", "https://s3.amazonaws.com/uifaces/faces/twitter/calebogden/128.jpg")
+        user2 = UserModel(2, "janet.weaver@reqres.in", "Janet", "Weaver", "https://s3.amazonaws.com/uifaces/faces/twitter/josephstein/128.jpg")
+        user3 = UserModel(3, "emma.wong@reqres.in", "Emma", "Wong", "https://s3.amazonaws.com/uifaces/faces/twitter/olegpogodaev/128.jpg")
+        user4 = UserModel(4, "eve.holt@reqres.in", "Eve", "Holt", "https://s3.amazonaws.com/uifaces/faces/twitter/marcoramires/128.jpg")
+        user5 = UserModel(5, "charles.morris@reqres.in", "Charles", "Morris", "https://s3.amazonaws.com/uifaces/faces/twitter/stephenmoon/128.jpg")
+        user6 = UserModel(6, "tracey.ramos@reqres.in", "Tracey", "Ramos", "https://s3.amazonaws.com/uifaces/faces/twitter/bigmancho/128.jpg")
+    }
 
     @DataProvider
     fun positivePages(): Array<Array<Int>> {
@@ -43,6 +62,13 @@ class ListUsersTest : BaseTest() {
             assertThat(user.email, matchesPattern(DataBank.EMAIL_PATTERN.get()))
             assertThat(user.avatar, matchesPattern(DataBank.URL_PATTERN.get()))
         }
+    }
+
+    @Test(description = "Предположим что нам заранее известны точные данные, которые мы получим с 1 страницы")
+    fun exampleJsonPathTest() {
+        val usersJson: JSONObject = get(Endpoints.USERS.URL + "?page=1", Status.OK.code)
+        assertThat(parse(usersJson.toString()).read("$..first_name") as List<String>, contains(user1.firstName, user2.firstName, user3.firstName, user4.firstName, user5.firstName, user6.firstName))
+        //TODO доработать проверки
     }
 
     @DataProvider
