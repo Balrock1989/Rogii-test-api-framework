@@ -11,7 +11,8 @@ open class BaseTest : DataGenerator() {
     /*** Логирование названия теста*/
     @BeforeMethod
     open fun handleTestMethodName(method: Method) {
-        logger.info("***************** Run Test : " + method.name.toString() + " *****************")
+        if (System.getProperty("config.logger").toBoolean())
+            logger.info("***************** Run Test: " + method.declaringClass.name.toString() + "." + method.name.toString() + " *****************")
     }
 
     /*** Очистка тестовых данных*/

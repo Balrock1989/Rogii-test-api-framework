@@ -11,8 +11,19 @@
         <base.url>https://reqres.in/api</base.url>
         <kotlin.version>1.4.10</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <config.logger>false</config.logger>
     </properties>
-
+    <profiles>
+        <profile>
+            <id>logger</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <config.logger>true</config.logger>
+            </properties>
+        </profile>
+    </profiles>
     <dependencies>
         <dependency>
             <groupId>org.testng</groupId>
@@ -160,6 +171,7 @@
                 <configuration>
                     <systemPropertyVariables>
                         <base.url>${base.url}</base.url>
+                        <config.logger>${config.logger}</config.logger>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

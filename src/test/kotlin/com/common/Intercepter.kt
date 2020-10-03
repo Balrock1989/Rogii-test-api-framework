@@ -24,9 +24,10 @@ internal class LoggingInterceptor : Interceptor {
         val time = (t2 - t1) / 1e6
         when (request.method) {
             "GET" -> logger.info(java.lang.String.format("GET $F_REQUEST_WITHOUT_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, response.code, stringifyResponseBody(bodyString)))
-            "POST" -> logger.info(java.lang.String.format("POST $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, stringifyRequestBody(request), response.code, stringifyResponseBody(bodyString)))
-            "PUT" -> logger.info(java.lang.String.format("PUT $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, request.body.toString(), response.code, stringifyResponseBody(bodyString)))
-            "DELETE" -> logger.info(java.lang.String.format("DELETE $F_REQUEST_WITHOUT_BODY$F_RESPONSE_WITHOUT_BODY", request.url, time, request.headers, response.code))
+            "POST" -> logger.info(java.lang.String.format("POST $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, JsonWriter.formatJson(stringifyRequestBody(request)), response.code, stringifyResponseBody(bodyString)))
+            "PUT" -> logger.info(java.lang.String.format("PUT $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, JsonWriter.formatJson(stringifyRequestBody(request)), response.code, stringifyResponseBody(bodyString)))
+            "PATCH" -> logger.info(java.lang.String.format("PATCH $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, JsonWriter.formatJson(stringifyRequestBody(request)), response.code, stringifyResponseBody(bodyString)))
+            "DELETE" -> logger.info(java.lang.String.format("DELETE $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, JsonWriter.formatJson(stringifyRequestBody(request)), response.code, stringifyResponseBody(bodyString)))
             else -> {
                 logger.info("Unknown request: " + request.method)
             }
@@ -50,7 +51,7 @@ internal class LoggingInterceptor : Interceptor {
         private const val F_TIME = " in %.1fms"
         private const val F_HEADERS = "%s"
         private const val F_RESPONSE = F_BREAK + "Response: %d"
-        private const val F_BODY = "body: %s"
+        private const val F_BODY = "Request body: %s"
         private const val F_BREAKER = "$F_BREAK-------------------------------------------$F_BREAK"
         private const val F_REQUEST_WITHOUT_BODY = F_URL + F_TIME + F_BREAK + F_HEADERS
         private const val F_RESPONSE_WITHOUT_BODY = F_RESPONSE + F_BREAK + F_BREAKER

@@ -13,8 +13,11 @@ open class HTTPClient {
             .add("Accept-Encoding", "identity")
             .build()
 
-    val client: OkHttpClient = OkHttpClient.Builder()
-            .addNetworkInterceptor(LoggingInterceptor())
-            .addInterceptor(AllureOkHttp3())
-            .build()
+    val client: OkHttpClient
+    init{
+        val builder: OkHttpClient.Builder = OkHttpClient.Builder()
+        builder.addInterceptor(AllureOkHttp3())
+        if (System.getProperty("config.logger").toBoolean()) builder.addNetworkInterceptor(LoggingInterceptor())
+        client = builder.build()
+    }
 }

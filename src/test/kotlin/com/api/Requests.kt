@@ -63,4 +63,18 @@ open class Requests : ApiRequestHelper() {
             return if (it.promisesBody()) JSONObject(it.body!!.string()) else JSONObject()
         }
     }
+
+    @Step("PUT запрос")
+    fun put(url: String, body: String, expectedCode: Int): JSONObject {
+        val requestBody: RequestBody = body.toRequestBody(mediaType)
+        val request = Request.Builder()
+                .url(url)
+                .headers(headers)
+                .put(requestBody)
+                .build()
+        client.newCall(request).execute().use {
+            checkStatus(it.code, expectedCode)
+            return if (it.promisesBody()) JSONObject(it.body!!.string()) else JSONObject()
+        }
+    }
 }

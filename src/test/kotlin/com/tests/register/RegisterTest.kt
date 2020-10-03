@@ -1,4 +1,4 @@
-package com.tests
+package com.tests.register
 
 import com.BaseTest
 import com.api.Status

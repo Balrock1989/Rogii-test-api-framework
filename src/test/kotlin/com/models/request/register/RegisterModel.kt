@@ -11,6 +11,6 @@ class RegisterModel(
 
         ) {
     fun getBody(): String {
-        return Json.encodeToString(serializer(), RegisterModel(email, password))
+        return Json.encodeToString(serializer(), this)
     }
 }
