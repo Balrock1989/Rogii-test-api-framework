@@ -1,6 +1,7 @@
 package com.tests.users
 
 import com.BaseTest
+import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
 import com.models.response.users.ListUsersModel
@@ -26,7 +27,7 @@ class ListUsersTest : BaseTest() {
 
     @Test(description = "Валидация списка пользователей", dataProvider = "positivePages")
     fun validateUsersDetailsTest(page: Int) {
-        val usersJson: JSONObject = get(DataBank.USERS_URL.get() + "?page=$page", Status.OK.code)
+        val usersJson: JSONObject = get(Endpoints.USERS.URL + "?page=$page", Status.OK.code)
         val users = Json.decodeFromString(ListUsersModel.serializer(), usersJson.toString())
         assertThat(users.page, equalTo(page))
         assertThat(users.total, greaterThanOrEqualTo(users.per_page))
@@ -55,7 +56,7 @@ class ListUsersTest : BaseTest() {
 
     @Test(description = "Проверка пустых страниц", dataProvider = "emptyPages")
     fun otherPagesTest(page: Int) {
-        val usersJson: JSONObject = get(DataBank.USERS_URL.get() + "?page=$page", Status.OK.code)
+        val usersJson: JSONObject = get(Endpoints.USERS.URL + "?page=$page", Status.OK.code)
         val users = Json.decodeFromString(ListUsersModel.serializer(), usersJson.toString())
         assertThat(users.data, hasSize(0))
         assertThat(users.ad.company, equalTo(DataBank.AD_COMPANY.get()))
@@ -77,7 +78,7 @@ class ListUsersTest : BaseTest() {
 
     @Test(description = "Проверка нулевой старницы", dataProvider = "otherPages")
     fun firstPageTest(search: String) {
-        val usersJson: JSONObject = get(DataBank.USERS_URL.get() + search, Status.OK.code)
+        val usersJson: JSONObject = get(Endpoints.USERS.URL + search, Status.OK.code)
         val users = Json.decodeFromString(ListUsersModel.serializer(), usersJson.toString())
         assertThat(users.data.size, not(equalTo(0)))
         assertThat(users.page, equalTo(1))

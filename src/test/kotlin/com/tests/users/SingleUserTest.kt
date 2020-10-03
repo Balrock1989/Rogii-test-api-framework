@@ -1,6 +1,7 @@
 package com.tests.users
 
 import com.BaseTest
+import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
 import com.models.request.users.CreateUserModel
@@ -26,7 +27,7 @@ class SingleUserTest : BaseTest() {
 
     @Test(description = "Валидация деталей ответа для одного пользователя", dataProvider = "positiveUsersId")
     fun validateSingleUsersDetailsTest(userId: Int) {
-        val usersJson: JSONObject = get(DataBank.USERS_URL.get() + "/$userId", Status.OK.code)
+        val usersJson: JSONObject = get(Endpoints.USERS.URL + "/$userId", Status.OK.code)
         val user = Json.decodeFromString(SingleUserModel.serializer(), usersJson.toString())
         assertThat(user.ad.company, equalTo(DataBank.AD_COMPANY.get()))
         assertThat(user.ad.text, equalTo(DataBank.AD_TEXT.get()))
@@ -50,22 +51,22 @@ class SingleUserTest : BaseTest() {
 
     @Test(description = "Валидация деталей ответа для одного пользователя", dataProvider = "invalidUsersId")
     fun invalidBodyForSingleUserTest(userId: String) {
-        val usersJson: JSONObject = get(DataBank.USERS_URL.get() + userId, Status.NOT_FOUND.code)
+        val usersJson: JSONObject = get(Endpoints.USERS.URL + userId, Status.NOT_FOUND.code)
         assertThat("{}", equalTo(usersJson.toString()))
     }
 
     @Test(description = "Создание пользователя")
     fun positiveCreateUserTest() {
-        post(DataBank.USERS_URL.get() + "/1", CreateUserModel("morpheus", "leader").getBody(), Status.CREATED.code)
+        post(Endpoints.USERS.URL + "/1", CreateUserModel("morpheus", "leader").getBody(), Status.CREATED.code)
     }
 
     @Test(description = "Обновление пользователя")
     fun positiveUpdateUserTest() {
-        patch(DataBank.USERS_URL.get() + "/1", UpdateUserModel("morpheus", "zion resident").getBody(), Status.OK.code)
+        patch(Endpoints.USERS.URL + "/1", UpdateUserModel("morpheus", "zion resident").getBody(), Status.OK.code)
     }
 
     @Test(description = "Удаление пользователя")
     fun positiveDeleteUserTest() {
-        delete(DataBank.USERS_URL.get() + "/1", Status.NO_CONTENT.code)
+        delete(Endpoints.USERS.URL + "/1", Status.NO_CONTENT.code)
     }
 }

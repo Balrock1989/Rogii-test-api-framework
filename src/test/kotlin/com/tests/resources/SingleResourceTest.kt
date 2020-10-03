@@ -1,6 +1,7 @@
 package com.tests.resources
 
 import com.BaseTest
+import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
 import com.models.request.resource.CreateResourceModel
@@ -25,7 +26,7 @@ class SingleResourceTest : BaseTest() {
 
     @Test(description = "Валидация деталей ответа для одного ресурса", dataProvider = "positiveResourcesId")
     fun validateSingleResourceDetailsTest(userId: Int) {
-        val resourceJson: JSONObject = get(DataBank.RESOURCE_URL.get() + "/$userId", Status.OK.code)
+        val resourceJson: JSONObject = get(Endpoints.RESOURCE.URL + "/$userId", Status.OK.code)
         val resource = Json.decodeFromString(SingleResourceModel.serializer(), resourceJson.toString())
         assertThat(resource.ad.company, equalTo(DataBank.AD_COMPANY.get()))
         assertThat(resource.ad.text, equalTo(DataBank.AD_TEXT.get()))
@@ -49,22 +50,22 @@ class SingleResourceTest : BaseTest() {
 
     @Test(description = "Проверка результатов запроса с неверными параметрами", dataProvider = "invalidResourcesId")
     fun invalidBodyForSingleResourceTest(userId: String) {
-        val resourceJson: JSONObject = get(DataBank.RESOURCE_URL.get() + userId, Status.NOT_FOUND.code)
+        val resourceJson: JSONObject = get(Endpoints.RESOURCE.URL + userId, Status.NOT_FOUND.code)
         assertThat("{}", equalTo(resourceJson.toString()))
     }
 
     @Test(description = "Создание ресурса")
     fun positiveCreateResourceTest() {
-        post(DataBank.RESOURCE_URL.get() + "/1", CreateResourceModel("morpheus", "leader").getBody(), Status.CREATED.code)
+        post(Endpoints.RESOURCE.URL + "/1", CreateResourceModel("morpheus", "leader").getBody(), Status.CREATED.code)
     }
 
     @Test(description = "Обновление ресурса")
     fun positiveUpdateResourceTest() {
-        patch(DataBank.RESOURCE_URL.get() + "/1", UpdateResourceModel("morpheus", "zion resident").getBody(), Status.OK.code)
+        patch(Endpoints.RESOURCE.URL + "/1", UpdateResourceModel("morpheus", "zion resident").getBody(), Status.OK.code)
     }
 
     @Test(description = "Удаление ресурса")
     fun positiveDeleteResourceTest() {
-        delete(DataBank.RESOURCE_URL.get() + "/1", Status.NO_CONTENT.code)
+        delete(Endpoints.RESOURCE.URL + "/1", Status.NO_CONTENT.code)
     }
 }

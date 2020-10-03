@@ -4,9 +4,6 @@ package com.data
 enum class DataBank {
     LOGIN_ADMIN("eve.holt@reqres.in"),
     PASSWORD_ADMIN("pistol"),
-    REGISTER_URL(System.getProperty("base.url") + "/register"),
-    USERS_URL(System.getProperty("base.url") + "/users"),
-    RESOURCE_URL(System.getProperty("base.url") + "/unknown"),
     AD_COMPANY("StatusCode Weekly"),
     AD_TEXT("A weekly newsletter focusing on software development, infrastructure, the server, performance, and the stack end of things."),
     AD_URL("http://statuscode.org/"),

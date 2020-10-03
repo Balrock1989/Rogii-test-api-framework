@@ -1,6 +1,7 @@
 package com.tests.resources
 
 import com.BaseTest
+import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
 import com.models.response.resourse.ListResourceModel
@@ -26,7 +27,7 @@ class ListResourceTest : BaseTest() {
 
     @Test(description = "Валидация списка ресурсов", dataProvider = "positivePages")
     fun validateResourcesDetailsTest(page: Int) {
-        val usersJson: JSONObject = get(DataBank.RESOURCE_URL.get() + "?page=$page", Status.OK.code)
+        val usersJson: JSONObject = get(Endpoints.RESOURCE.URL + "?page=$page", Status.OK.code)
         val resources = Json.decodeFromString(ListResourceModel.serializer(), usersJson.toString())
         assertThat(resources.page, equalTo(page))
         assertThat(resources.total, greaterThanOrEqualTo(resources.per_page))
@@ -56,7 +57,7 @@ class ListResourceTest : BaseTest() {
 
     @Test(description = "Проверка пустых страниц", dataProvider = "emptyPages")
     fun otherPagesTest(page: Int) {
-        val usersJson: JSONObject = get(DataBank.RESOURCE_URL.get() + "?page=$page", Status.OK.code)
+        val usersJson: JSONObject = get(Endpoints.RESOURCE.URL + "?page=$page", Status.OK.code)
         val resources = Json.decodeFromString(ListResourceModel.serializer(), usersJson.toString())
         assertThat(resources.page, equalTo(page))
         assertThat(resources.total, greaterThanOrEqualTo(resources.per_page))
@@ -76,7 +77,7 @@ class ListResourceTest : BaseTest() {
 
     @Test(description = "Проверка нулевой старницы", dataProvider = "otherPages")
     fun firstPageTest(search: String) {
-        val resourcesJson: JSONObject = get(DataBank.USERS_URL.get() + search, Status.OK.code)
+        val resourcesJson: JSONObject = get(Endpoints.USERS.URL + search, Status.OK.code)
         val resources = Json.decodeFromString(ListUsersModel.serializer(), resourcesJson.toString())
         assertThat(resources.data.size, not(equalTo(0)))
         assertThat(resources.page, equalTo(1))

@@ -1,6 +1,7 @@
 package com.tests.register
 
 import com.BaseTest
+import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
 import com.models.request.register.RegisterModel
@@ -28,7 +29,7 @@ class RegisterTest : BaseTest() {
 
     @Test(description = "Позитивная регистрация", dataProvider = "positiveBody")
     fun positiveRegisterTest(body: String) {
-        val registerJson: JSONObject = post(DataBank.REGISTER_URL.get(), body, Status.OK.code)
+        val registerJson: JSONObject = post(Endpoints.REGISTER.URL, body, Status.OK.code)
         val response: PositiveRegisterModel = Json.decodeFromString(PositiveRegisterModel.serializer(), registerJson.toString())
         assertThat(response.token.length, equalTo(17))
         assertThat(response.id, notNullValue())
@@ -46,7 +47,7 @@ class RegisterTest : BaseTest() {
 
     @Test(description = "Проверка ошибок при неверном теле запроса", dataProvider = "invalidBody")
     fun registerWithInvalidDataTest(body: String, message: String) {
-        val registerJson: JSONObject = post(DataBank.REGISTER_URL.get(), body, Status.BAD_REQUEST.code)
+        val registerJson: JSONObject = post(Endpoints.REGISTER.URL, body, Status.BAD_REQUEST.code)
         val response: NegativeRegisterModel = Json.decodeFromString(NegativeRegisterModel.serializer(), registerJson.toString())
         assertThat(response.error, equalTo(message))
     }
