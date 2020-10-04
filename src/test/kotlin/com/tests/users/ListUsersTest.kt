@@ -82,10 +82,9 @@ class ListUsersTest : BaseTest() {
     @Test(description = "Демонстрация теста для валидации через сравнение объектов")
     fun exampleCompareJojectTest() {
         val usersJson: JSONObject = get(Endpoints.USERS.URL + "?page=1", Status.OK.code)
-        val users = Json.decodeFromString(ListUsersModel.serializer(), usersJson.toString())
-        for (i in users.data.indices) {
+        for (i in users.indices) {
             val userInResponse = Json.decodeFromString(UserDataModel.serializer(), usersJson.getJSONArray("data")[i].toString())
-            assertThat(users.data[i], equalTo(userInResponse))
+            assertThat(users[i], equalTo(userInResponse))
         }
     }
 
