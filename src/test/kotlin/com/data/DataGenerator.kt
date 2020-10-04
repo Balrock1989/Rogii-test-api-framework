@@ -12,10 +12,11 @@ import kotlinx.serialization.json.Json
 import org.json.JSONObject
 
 /*** Генератор тестовых данных*/
-open class DataGenerator : Requests(), RandomGenerator {
+open class DataGenerator : Requests(), RandomStringGenerator {
 
     @Step("Регистрация в системе нового пользователя")
     fun registerNewUser(login: String, password: String): PositiveRegisterModel {
+
         val usersJson: JSONObject = post(Endpoints.REGISTER.URL, RegisterModel(login, password).getBody(), Status.OK.code)
         return Json.decodeFromString(PositiveRegisterModel.serializer(), usersJson.toString())
     }

@@ -1,6 +1,7 @@
 package com.models.response.users
 
-import com.models.response.general.AdModel
+import com.models.general.dataObjects.UserDataModel
+import com.models.general.AdModel
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 

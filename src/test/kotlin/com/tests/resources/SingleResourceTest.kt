@@ -4,7 +4,6 @@ import com.BaseTest
 import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
-import com.models.request.resource.CreateResourceModel
 import com.models.request.resource.UpdateResourceModel
 import com.models.response.resourse.SingleResourceModel
 import kotlinx.serialization.json.Json
@@ -35,7 +34,12 @@ class SingleResourceTest : BaseTest() {
         assertThat(resource.data.name, matchesPattern(DataBank.RESOURCE_NAME_PATTERN.get()))
         assertThat(resource.data.year, allOf(greaterThanOrEqualTo(1900), lessThanOrEqualTo(2100)))
         assertThat(resource.data.color, matchesPattern(DataBank.COLOR_PATTERN.get()))
-        assertThat(resource.data.pantone_value, matchesPattern(DataBank.PHONE_PATTERN.get()))
+        assertThat(resource.data.pantone, matchesPattern(DataBank.PHONE_PATTERN.get()))
+    }
+
+    @Test(description = "Обновление ресурса", dataProvider = "positiveResourcesId")
+    fun positiveUpdateResourceTest(userId: Int) {
+        patch(Endpoints.RESOURCE.URL + "/$userId", UpdateResourceModel("morpheus", "zion resident").getBody(), Status.OK.code)
     }
 
     @DataProvider
@@ -54,18 +58,8 @@ class SingleResourceTest : BaseTest() {
         assertThat("{}", equalTo(resourceJson.toString()))
     }
 
-    @Test(description = "Создание ресурса")
-    fun positiveCreateResourceTest() {
-        post(Endpoints.RESOURCE.URL + "/1", CreateResourceModel("morpheus", "leader").getBody(), Status.CREATED.code)
-    }
-
-    @Test(description = "Обновление ресурса")
-    fun positiveUpdateResourceTest() {
-        patch(Endpoints.RESOURCE.URL + "/1", UpdateResourceModel("morpheus", "zion resident").getBody(), Status.OK.code)
-    }
-
-    @Test(description = "Удаление ресурса")
-    fun positiveDeleteResourceTest() {
-        delete(Endpoints.RESOURCE.URL + "/1", Status.NO_CONTENT.code)
+    @Test(description = "Удаление ресурса", dataProvider = "invalidResourcesId")
+    fun positiveDeleteResourceTest(userId: String) {
+        delete(Endpoints.RESOURCE.URL + userId, Status.NO_CONTENT.code)
     }
 }

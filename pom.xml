@@ -12,6 +12,7 @@
         <kotlin.version>1.4.10</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <config.logger>false</config.logger>
+        <config.locale>en-EN</config.locale>
     </properties>
     <profiles>
         <profile>
@@ -21,6 +22,24 @@
             </activation>
             <properties>
                 <config.logger>true</config.logger>
+            </properties>
+        </profile>
+        <profile>
+            <id>testDataRU</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <config.locale>ru-RU</config.locale>
+            </properties>
+        </profile>
+        <profile>
+            <id>testDataEN</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <config.locale>en-EN</config.locale>
             </properties>
         </profile>
     </profiles>
@@ -82,6 +101,11 @@
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
             <version>1.10.16</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>io.qameta.allure</groupId>
@@ -172,6 +196,7 @@
                     <systemPropertyVariables>
                         <base.url>${base.url}</base.url>
                         <config.logger>${config.logger}</config.logger>
+                        <config.locale>${config.locale}</config.locale>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

@@ -38,11 +38,11 @@ class ListResourceTest : BaseTest() {
         assertThat(resources.data.size, greaterThanOrEqualTo(1))
         checkSortedResourcesById(resources.data)
         resources.data.forEach { resource ->
-            assertThat(resource.id, greaterThanOrEqualTo(1))
+            assertThat(resource.id!!, greaterThanOrEqualTo(1))
             assertThat(resource.name, matchesPattern(DataBank.RESOURCE_NAME_PATTERN.get()))
             assertThat(resource.year, allOf(greaterThanOrEqualTo(1900), lessThanOrEqualTo(2100)))
             assertThat(resource.color, matchesPattern(DataBank.COLOR_PATTERN.get()))
-            assertThat(resource.pantone_value, matchesPattern(DataBank.PHONE_PATTERN.get()))
+            assertThat(resource.pantone, matchesPattern(DataBank.PHONE_PATTERN.get()))
         }
     }
 

@@ -4,7 +4,6 @@ import com.BaseTest
 import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
-import com.models.request.users.CreateUserModel
 import com.models.request.users.UpdateUserModel
 import com.models.response.users.SingleUserModel
 import kotlinx.serialization.json.Json
@@ -33,10 +32,15 @@ class SingleUserTest : BaseTest() {
         assertThat(user.ad.text, equalTo(DataBank.AD_TEXT.get()))
         assertThat(user.ad.url, equalTo(DataBank.AD_URL.get()))
         assertThat(user.data.id, equalTo(userId))
-        assertThat(user.data.first_name, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
-        assertThat(user.data.last_name, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
+        assertThat(user.data.firstName, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
+        assertThat(user.data.lastName, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
         assertThat(user.data.email, matchesPattern(DataBank.EMAIL_PATTERN.get()))
         assertThat(user.data.avatar, matchesPattern(DataBank.URL_PATTERN.get()))
+    }
+
+    @Test(description = "Обновление пользователя", dataProvider = "positiveUsersId")
+    fun positiveUpdateUserTest(userId: Int) {
+        patch(Endpoints.USERS.URL + "/$userId", UpdateUserModel("morpheus", "zion resident").getBody(), Status.OK.code)
     }
 
     @DataProvider
@@ -49,24 +53,14 @@ class SingleUserTest : BaseTest() {
         )
     }
 
-    @Test(description = "Валидация деталей ответа для одного пользователя", dataProvider = "invalidUsersId")
+    @Test(description = "Проверка результатов запроса с неверными параметрами", dataProvider = "invalidUsersId")
     fun invalidBodyForSingleUserTest(userId: String) {
         val usersJson: JSONObject = get(Endpoints.USERS.URL + userId, Status.NOT_FOUND.code)
         assertThat("{}", equalTo(usersJson.toString()))
     }
 
-    @Test(description = "Создание пользователя")
-    fun positiveCreateUserTest() {
-        post(Endpoints.USERS.URL + "/1", CreateUserModel("morpheus", "leader").getBody(), Status.CREATED.code)
-    }
-
-    @Test(description = "Обновление пользователя")
-    fun positiveUpdateUserTest() {
-        patch(Endpoints.USERS.URL + "/1", UpdateUserModel("morpheus", "zion resident").getBody(), Status.OK.code)
-    }
-
-    @Test(description = "Удаление пользователя")
-    fun positiveDeleteUserTest() {
-        delete(Endpoints.USERS.URL + "/1", Status.NO_CONTENT.code)
+    @Test(description = "Удаление пользователя", dataProvider = "invalidUsersId")
+    fun positiveDeleteUserTest(userId: String) {
+        delete(Endpoints.USERS.URL + userId, Status.NO_CONTENT.code)
     }
 }

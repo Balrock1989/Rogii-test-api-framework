@@ -4,8 +4,7 @@ import com.BaseTest
 import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
-import com.jayway.jsonpath.JsonPath.parse
-import com.models.request.users.UserModel
+import com.models.general.dataObjects.UserDataModel
 import com.models.response.users.ListUsersModel
 import kotlinx.serialization.json.Json
 import org.hamcrest.MatcherAssert.assertThat
@@ -15,25 +14,29 @@ import org.json.JSONObject
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
+import java.util.stream.Collectors.toList
 
 
 class ListUsersTest : BaseTest() {
-    private lateinit var user1: UserModel
-    private lateinit var user2: UserModel
-    private lateinit var user3: UserModel
-    private lateinit var user4: UserModel
-    private lateinit var user5: UserModel
-    private lateinit var user6: UserModel
+    private var users = ArrayList<UserDataModel>()
     private val usersPerPage: Int = 6
 
     @BeforeClass
     fun prepare() {
-        user1 = UserModel(1, "george.bluth@reqres.in", "George", "Bluth", "https://s3.amazonaws.com/uifaces/faces/twitter/calebogden/128.jpg")
-        user2 = UserModel(2, "janet.weaver@reqres.in", "Janet", "Weaver", "https://s3.amazonaws.com/uifaces/faces/twitter/josephstein/128.jpg")
-        user3 = UserModel(3, "emma.wong@reqres.in", "Emma", "Wong", "https://s3.amazonaws.com/uifaces/faces/twitter/olegpogodaev/128.jpg")
-        user4 = UserModel(4, "eve.holt@reqres.in", "Eve", "Holt", "https://s3.amazonaws.com/uifaces/faces/twitter/marcoramires/128.jpg")
-        user5 = UserModel(5, "charles.morris@reqres.in", "Charles", "Morris", "https://s3.amazonaws.com/uifaces/faces/twitter/stephenmoon/128.jpg")
-        user6 = UserModel(6, "tracey.ramos@reqres.in", "Tracey", "Ramos", "https://s3.amazonaws.com/uifaces/faces/twitter/bigmancho/128.jpg")
+        val user = UserDataModel {
+            it.id = 1
+            it.email = "george.bluth@reqres.in"
+            it.firstName = "George"
+            it.lastName = "Bluth"
+            it.avatar = "https://s3.amazonaws.com/uifaces/faces/twitter/calebogden/128.jpg"
+        }
+        users.add(user)
+        users.add(UserDataModel(2, "janet.weaver@reqres.in", "Janet", "Weaver", "https://s3.amazonaws.com/uifaces/faces/twitter/josephstein/128.jpg"))
+        users.add(UserDataModel(3, "emma.wong@reqres.in", "Emma", "Wong", "https://s3.amazonaws.com/uifaces/faces/twitter/olegpogodaev/128.jpg"))
+        users.add(UserDataModel(4, "eve.holt@reqres.in", "Eve", "Holt", "https://s3.amazonaws.com/uifaces/faces/twitter/marcoramires/128.jpg"))
+        users.add(UserDataModel(5, "charles.morris@reqres.in", "Charles", "Morris", "https://s3.amazonaws.com/uifaces/faces/twitter/stephenmoon/128.jpg"))
+        users.add(UserDataModel(6, "tracey.ramos@reqres.in", "Tracey", "Ramos", "https://s3.amazonaws.com/uifaces/faces/twitter/bigmancho/128.jpg"))
+
     }
 
     @DataProvider
@@ -56,19 +59,34 @@ class ListUsersTest : BaseTest() {
         assertThat(users.ad.url, equalTo(DataBank.AD_URL.get()))
         checkSortedUsersById(users.data)
         users.data.forEach { user ->
-            assertThat(user.id, greaterThanOrEqualTo(1))
-            assertThat(user.first_name, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
-            assertThat(user.last_name, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
+            assertThat(user.id!!, greaterThanOrEqualTo(1))
+            assertThat(user.firstName, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
+            assertThat(user.lastName, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
             assertThat(user.email, matchesPattern(DataBank.EMAIL_PATTERN.get()))
             assertThat(user.avatar, matchesPattern(DataBank.URL_PATTERN.get()))
         }
     }
 
-    @Test(description = "Предположим что нам заранее известны точные данные, которые мы получим с 1 страницы")
+    /*** Предположим что нам заранее известны точные данные, которые мы получим с 1 страницы*/
+    @Test(description = "Демонстрация теста для валидации через JsonPath")
     fun exampleJsonPathTest() {
         val usersJson: JSONObject = get(Endpoints.USERS.URL + "?page=1", Status.OK.code)
-        assertThat(parse(usersJson.toString()).read("$..first_name") as List<String>, contains(user1.firstName, user2.firstName, user3.firstName, user4.firstName, user5.firstName, user6.firstName))
-        //TODO доработать проверки
+        assertThat(parseJson(usersJson, "data").size, equalTo(usersJson.getJSONArray("data").length()))
+        assertThat(parseJson(usersJson, "data[*].id"), equalTo(users.stream().map { user -> user.id }.collect(toList())))
+        assertThat(parseJson(usersJson, "data[*].email"), equalTo(users.stream().map { user -> user.email }.collect(toList())))
+        assertThat(parseJson(usersJson, "data[*].first_name"), equalTo(users.stream().map { user -> user.firstName }.collect(toList())))
+        assertThat(parseJson(usersJson, "data[*].last_name"), equalTo(users.stream().map { user -> user.lastName }.collect(toList())))
+        assertThat(parseJson(usersJson, "data[*].avatar"), equalTo(users.stream().map { user -> user.avatar }.collect(toList())))
+    }
+
+    @Test(description = "Демонстрация теста для валидации через сравнение объектов")
+    fun exampleCompareJojectTest() {
+        val usersJson: JSONObject = get(Endpoints.USERS.URL + "?page=1", Status.OK.code)
+        val users = Json.decodeFromString(ListUsersModel.serializer(), usersJson.toString())
+        for (i in users.data.indices) {
+            val userInResponse = Json.decodeFromString(UserDataModel.serializer(), usersJson.getJSONArray("data")[i].toString())
+            assertThat(users.data[i], equalTo(userInResponse))
+        }
     }
 
     @DataProvider
@@ -85,12 +103,12 @@ class ListUsersTest : BaseTest() {
         val usersJson: JSONObject = get(Endpoints.USERS.URL + "?page=$page", Status.OK.code)
         val users = Json.decodeFromString(ListUsersModel.serializer(), usersJson.toString())
         assertThat(users.data, hasSize(0))
+        assertThat(users.page, equalTo(page))
+        assertThat(users.per_page, equalTo(usersPerPage))
+        assertThat(users.total, greaterThanOrEqualTo(0))
         assertThat(users.ad.company, equalTo(DataBank.AD_COMPANY.get()))
         assertThat(users.ad.text, equalTo(DataBank.AD_TEXT.get()))
         assertThat(users.ad.url, equalTo(DataBank.AD_URL.get()))
-        assertThat(users.per_page, equalTo(usersPerPage))
-        assertThat(users.page, equalTo(page))
-        assertThat(users.total, greaterThanOrEqualTo(0))
     }
 
     @DataProvider
