@@ -66,7 +66,6 @@ internal class LoggingInterceptor : Interceptor {
         private fun stringifyRequestBody(request: Request): String {
             val copy: Request = request.newBuilder().build()
             val buffer = Buffer()
-            copy.body!!.writeTo(buffer)
             return try{
                 copy.body!!.writeTo(buffer)
                 JsonWriter.formatJson(buffer.readUtf8())

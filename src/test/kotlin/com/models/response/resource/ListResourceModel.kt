@@ -1,14 +1,14 @@
-package com.models.response.users
+package com.models.response.resource
 
-import com.models.general.dataObjects.UserDataModel
 import com.models.general.AdModel
+import com.models.general.dataObjects.ResourceDataModel
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ListUsersModel(
+data class ListResourceModel(
         @Required var ad: AdModel,
-        @Required var data: List<UserDataModel>,
+        @Required var data: List<ResourceDataModel>,
         @Required var page: Int,
         @Required var per_page: Int,
         @Required var total: Int,

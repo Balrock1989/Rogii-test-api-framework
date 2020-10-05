@@ -1,10 +1,10 @@
-package com.models.response.resourse
+package com.models.response.resource
 
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UpdatedResourseModel(
+data class UpdatedResourceModel(
         @Required var updatedAt: String,
         var name: String? = null,
         var job: String? = null,

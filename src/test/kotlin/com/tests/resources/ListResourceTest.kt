@@ -4,7 +4,7 @@ import com.BaseTest
 import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
-import com.models.response.resourse.ListResourceModel
+import com.models.response.resource.ListResourceModel
 import com.models.response.users.ListUsersModel
 import kotlinx.serialization.json.Json
 import org.hamcrest.MatcherAssert.assertThat

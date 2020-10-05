@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SingleUserModel(
-        @Required val ad: AdModel,
-        @Required val data: UserDataModel
+        @Required var ad: AdModel,
+        @Required var data: UserDataModel
 )

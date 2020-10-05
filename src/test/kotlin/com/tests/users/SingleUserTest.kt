@@ -58,6 +58,16 @@ class SingleUserTest : BaseTest() {
         assertThat("{}", equalTo(response.toString()))
     }
 
+    @Test(description = "delete запрос на несуществующие эндпоинты", dataProvider = "invalidUsersId")
+    fun negativeDeleteUserTest(userId: String) {
+        delete(Endpoints.USERS.URL + userId, Status.BAD_REQUEST.code) // падает потому что delete запрос на любой эндпоинт возвращает 204
+    }
+
+    @Test(description = "Удаление пользователя")
+    fun deleteUserTest() {
+        delete(Endpoints.USERS.URL + "/1", Status.NO_CONTENT.code)
+    }
+
     @DataProvider
     fun updateBody(): Array<Array<String>> {
         return arrayOf(
@@ -85,10 +95,5 @@ class SingleUserTest : BaseTest() {
     @Test(description = "Отправка patch запроса с телом не в формате Json")
     fun negativeUpdateUserTest() {
         patch(Endpoints.USERS.URL + "/1", "Не Json", Status.BAD_REQUEST.code) // падает т.к. возвращается не Json
-    }
-
-    @Test(description = "Удаление пользователя", dataProvider = "invalidUsersId")
-    fun positiveDeleteUserTest(userId: String) {
-        delete(Endpoints.USERS.URL + userId, Status.NO_CONTENT.code)
     }
 }

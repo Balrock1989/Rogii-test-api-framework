@@ -1,4 +1,4 @@
-package com.models.response.resourse
+package com.models.response.resource
 
 import com.models.general.AdModel
 import com.models.general.dataObjects.ResourceDataModel
@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SingleResourceModel(
-        @Required val ad: AdModel,
-        @Required val data: ResourceDataModel
+        @Required var ad: AdModel,
+        @Required var data: ResourceDataModel
 )

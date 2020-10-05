@@ -5,7 +5,7 @@ import org.testng.annotations.Optional
 
 @Serializable
 data class AdModel(
-        @Optional val company: String,
-        @Optional val text: String,
-        @Optional val url: String
+        @Optional var company: String,
+        @Optional var text: String,
+        @Optional var url: String
 )

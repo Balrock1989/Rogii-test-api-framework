@@ -5,9 +5,8 @@ import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
 import com.models.request.users.UpdateUserModel
-import com.models.response.resourse.SingleResourceModel
-import com.models.response.resourse.UpdatedResourseModel
-import com.models.response.users.UpdatedUserModel
+import com.models.response.resource.SingleResourceModel
+import com.models.response.resource.UpdatedResourceModel
 import kotlinx.serialization.json.Json
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
@@ -56,6 +55,16 @@ class SingleResourceTest : BaseTest() {
         assertThat("{}", equalTo(response.toString()))
     }
 
+    @Test(description = "delete запрос на несуществующие эндпоинты", dataProvider = "invalidResourcesId")
+    fun negativeDeleteResourceTest(userId: String) {
+        delete(Endpoints.RESOURCE.URL + userId, Status.BAD_REQUEST.code) // падает потому что delete запрос на любой эндпоинт возвращает 204
+    }
+
+    @Test(description = "Удаление ресурса")
+    fun deleteResourceTest() {
+        delete(Endpoints.RESOURCE.URL + "/1", Status.NO_CONTENT.code)
+    }
+
     @DataProvider
     fun updateBody(): Array<Array<String>> {
         return arrayOf(
@@ -70,23 +79,18 @@ class SingleResourceTest : BaseTest() {
     }
 
     @Test(description = "Обновление ресурса", dataProvider = "updateBody")
-    fun updateResourseTest(body: String) {
+    fun updateResourceTest(body: String) {
         val response: JSONObject = patch(Endpoints.RESOURCE.URL + "/1", body, Status.OK.code)
-        val updatedResourse = Json.decodeFromString(UpdatedResourseModel.serializer(), response.toString())
-        assertThat(updatedResourse.updatedAt, MatchesPattern.matchesPattern(DataBank.UPDATE_AT_PATTERN.get()))
-        val expectedResourseJson = if (body != "") JSONObject(body) else JSONObject()
-        expectedResourseJson.put("updatedAt",updatedResourse.updatedAt)
-        val expectedResourse = Json.decodeFromString(UpdatedResourseModel.serializer(), expectedResourseJson.toString())
-        assertThat(updatedResourse, equalTo(expectedResourse))
+        val updatedResource = Json.decodeFromString(UpdatedResourceModel.serializer(), response.toString())
+        assertThat(updatedResource.updatedAt, MatchesPattern.matchesPattern(DataBank.UPDATE_AT_PATTERN.get()))
+        val expectedResourceJson = if (body != "") JSONObject(body) else JSONObject()
+        expectedResourceJson.put("updatedAt",updatedResource.updatedAt)
+        val expectedResource = Json.decodeFromString(UpdatedResourceModel.serializer(), expectedResourceJson.toString())
+        assertThat(updatedResource, equalTo(expectedResource))
     }
 
     @Test(description = "Отправка patch запроса с телом не в формате Json")
     fun negativeUpdateUserTest() {
         patch(Endpoints.RESOURCE.URL + "/1", "Не Json", Status.BAD_REQUEST.code) // падает т.к. возвращается не Json
-    }
-
-    @Test(description = "Удаление ресурса", dataProvider = "invalidResourcesId")
-    fun positiveDeleteResourceTest(userId: String) {
-        delete(Endpoints.RESOURCE.URL + userId, Status.NO_CONTENT.code)
     }
 }
