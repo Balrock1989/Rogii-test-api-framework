@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 @Serializable
-class UpdateUserModel(
+data class UpdateUserModel(
         val job: String,
         val name: String
 ) {

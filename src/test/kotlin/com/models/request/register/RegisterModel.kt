@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 @Serializable
-class RegisterModel(
+data class RegisterModel(
         @Required val email: String,
         @Required val password: String,
 
