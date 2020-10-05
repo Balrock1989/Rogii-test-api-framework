@@ -4,10 +4,14 @@ import com.BaseTest
 import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
+import com.fasterxml.jackson.databind.ser.std.StdJdkSerializers.all
 import com.models.request.users.UpdateUserModel
 import com.models.response.users.SingleUserModel
+import com.models.response.users.UpdatedUserModel
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.text.MatchesPattern.matchesPattern
 import org.json.JSONObject
@@ -26,8 +30,8 @@ class SingleUserTest : BaseTest() {
 
     @Test(description = "Валидация деталей ответа для одного пользователя", dataProvider = "positiveUsersId")
     fun validateSingleUsersDetailsTest(userId: Int) {
-        val usersJson: JSONObject = get(Endpoints.USERS.URL + "/$userId", Status.OK.code)
-        val user = Json.decodeFromString(SingleUserModel.serializer(), usersJson.toString())
+        val response: JSONObject = get(Endpoints.USERS.URL + "/$userId", Status.OK.code)
+        val user = Json.decodeFromString(SingleUserModel.serializer(), response.toString())
         assertThat(user.ad.company, equalTo(DataBank.AD_COMPANY.get()))
         assertThat(user.ad.text, equalTo(DataBank.AD_TEXT.get()))
         assertThat(user.ad.url, equalTo(DataBank.AD_URL.get()))
@@ -36,11 +40,6 @@ class SingleUserTest : BaseTest() {
         assertThat(user.data.lastName, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
         assertThat(user.data.email, matchesPattern(DataBank.EMAIL_PATTERN.get()))
         assertThat(user.data.avatar, matchesPattern(DataBank.URL_PATTERN.get()))
-    }
-
-    @Test(description = "Обновление пользователя", dataProvider = "positiveUsersId")
-    fun positiveUpdateUserTest(userId: Int) {
-        patch(Endpoints.USERS.URL + "/$userId", UpdateUserModel("morpheus", "zion resident").getBody(), Status.OK.code)
     }
 
     @DataProvider
@@ -55,8 +54,37 @@ class SingleUserTest : BaseTest() {
 
     @Test(description = "Проверка результатов запроса с неверными параметрами", dataProvider = "invalidUsersId")
     fun invalidBodyForSingleUserTest(userId: String) {
-        val usersJson: JSONObject = get(Endpoints.USERS.URL + userId, Status.NOT_FOUND.code)
-        assertThat("{}", equalTo(usersJson.toString()))
+        val response: JSONObject = get(Endpoints.USERS.URL + userId, Status.NOT_FOUND.code)
+        assertThat("{}", equalTo(response.toString()))
+    }
+
+    @DataProvider
+    fun updateBody(): Array<Array<String>> {
+        return arrayOf(
+                arrayOf(UpdateUserModel("morpheus", "zion resident").getBody()),
+                arrayOf(UpdateUserModel(getRandomString(200), getRandomString(200)).getBody()),
+                arrayOf("{}"),
+                arrayOf(""),
+                arrayOf(UpdateUserModel("", "").getBody()),
+                arrayOf("{\"job\": \"morpheus\", \"invalidIntField\": -5}"),
+                arrayOf("{\"invalidBooleanField\": true, \"name\": \"morpheus\"}"),
+        )
+    }
+
+    @Test(description = "Обновление пользователя", dataProvider = "updateBody")
+    fun updateUserTest(body: String) {
+        val response: JSONObject = patch(Endpoints.USERS.URL + "/1", body, Status.OK.code)
+        val updatedUser = Json.decodeFromString(UpdatedUserModel.serializer(), response.toString())
+        assertThat(updatedUser.updatedAt, matchesPattern(DataBank.UPDATE_AT_PATTERN.get()))
+        val expectedUserJson = if (body != "") JSONObject(body) else JSONObject()
+        expectedUserJson.put("updatedAt",updatedUser.updatedAt)
+        val expectedUser = Json.decodeFromString(UpdatedUserModel.serializer(), expectedUserJson.toString())
+        assertThat(updatedUser, equalTo(expectedUser))
+    }
+
+    @Test(description = "Отправка patch запроса с телом не в формате Json")
+    fun negativeUpdateUserTest() {
+        patch(Endpoints.USERS.URL + "/1", "Не Json", Status.BAD_REQUEST.code) // падает т.к. возвращается не Json
     }
 
     @Test(description = "Удаление пользователя", dataProvider = "invalidUsersId")

@@ -29,10 +29,10 @@ class RegisterTest : BaseTest() {
 
     @Test(description = "Позитивная регистрация", dataProvider = "positiveBody")
     fun positiveRegisterTest(body: String) {
-        val registerJson: JSONObject = post(Endpoints.REGISTER.URL, body, Status.OK.code)
-        val response: PositiveRegisterModel = Json.decodeFromString(PositiveRegisterModel.serializer(), registerJson.toString())
-        assertThat(response.token.length, equalTo(17))
-        assertThat(response.id, notNullValue())
+        val response: JSONObject = post(Endpoints.REGISTER.URL, body, Status.OK.code)
+        val register: PositiveRegisterModel = Json.decodeFromString(PositiveRegisterModel.serializer(), response.toString())
+        assertThat(register.token.length, equalTo(17))
+        assertThat(register.id, notNullValue())
     }
 
     @DataProvider
@@ -47,8 +47,8 @@ class RegisterTest : BaseTest() {
 
     @Test(description = "Проверка ошибок при неверном теле запроса", dataProvider = "invalidBody")
     fun registerWithInvalidDataTest(body: String, message: String) {
-        val registerJson: JSONObject = post(Endpoints.REGISTER.URL, body, Status.BAD_REQUEST.code)
-        val response: NegativeRegisterModel = Json.decodeFromString(NegativeRegisterModel.serializer(), registerJson.toString())
-        assertThat(response.error, equalTo(message))
+        val response: JSONObject = post(Endpoints.REGISTER.URL, body, Status.BAD_REQUEST.code)
+        val register: NegativeRegisterModel = Json.decodeFromString(NegativeRegisterModel.serializer(), response.toString())
+        assertThat(register.error, equalTo(message))
     }
 }

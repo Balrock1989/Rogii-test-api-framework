@@ -12,6 +12,7 @@ enum class DataBank {
     EMAIL_PATTERN("^\\w*\\.\\w*@\\w*.in"),
     COLOR_PATTERN("#[0-9A-Z]{6}"),
     PHONE_PATTERN("\\d{2}-\\d{4}"),
+    UPDATE_AT_PATTERN("\\d{4}-\\d{2}-\\S{5}:\\d{2}:\\d{2}\\.\\S{4}"),
     URL_PATTERN("^http?s:\\/\\/\\S*\\.jpg");
 
     private lateinit var array: List<String>

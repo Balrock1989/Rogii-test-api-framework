@@ -27,8 +27,8 @@ class ListResourceTest : BaseTest() {
 
     @Test(description = "Валидация списка ресурсов", dataProvider = "positivePages")
     fun validateResourcesDetailsTest(page: Int) {
-        val usersJson: JSONObject = get(Endpoints.RESOURCE.URL + "?page=$page", Status.OK.code)
-        val resources = Json.decodeFromString(ListResourceModel.serializer(), usersJson.toString())
+        val response: JSONObject = get(Endpoints.RESOURCE.URL + "?page=$page", Status.OK.code)
+        val resources = Json.decodeFromString(ListResourceModel.serializer(), response.toString())
         assertThat(resources.page, equalTo(page))
         assertThat(resources.total, greaterThanOrEqualTo(resources.per_page))
         assertThat(resources.per_page, equalTo(resourcesPerPage))
@@ -57,8 +57,8 @@ class ListResourceTest : BaseTest() {
 
     @Test(description = "Проверка пустых страниц", dataProvider = "emptyPages")
     fun otherPagesTest(page: Int) {
-        val usersJson: JSONObject = get(Endpoints.RESOURCE.URL + "?page=$page", Status.OK.code)
-        val resources = Json.decodeFromString(ListResourceModel.serializer(), usersJson.toString())
+        val response: JSONObject = get(Endpoints.RESOURCE.URL + "?page=$page", Status.OK.code)
+        val resources = Json.decodeFromString(ListResourceModel.serializer(), response.toString())
         assertThat(resources.page, equalTo(page))
         assertThat(resources.total, greaterThanOrEqualTo(resources.per_page))
         assertThat(resources.per_page, equalTo(resourcesPerPage))
@@ -77,8 +77,8 @@ class ListResourceTest : BaseTest() {
 
     @Test(description = "Проверка нулевой старницы", dataProvider = "otherPages")
     fun firstPageTest(search: String) {
-        val resourcesJson: JSONObject = get(Endpoints.USERS.URL + search, Status.OK.code)
-        val resources = Json.decodeFromString(ListUsersModel.serializer(), resourcesJson.toString())
+        val response: JSONObject = get(Endpoints.USERS.URL + search, Status.OK.code)
+        val resources = Json.decodeFromString(ListUsersModel.serializer(), response.toString())
         assertThat(resources.data.size, not(equalTo(0)))
         assertThat(resources.page, equalTo(1))
     }

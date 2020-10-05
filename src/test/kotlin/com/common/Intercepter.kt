@@ -1,5 +1,6 @@
 package com.common
 
+import com.cedarsoftware.util.io.JsonIoException
 import com.cedarsoftware.util.io.JsonWriter
 import okhttp3.*
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -24,12 +25,12 @@ internal class LoggingInterceptor : Interceptor {
         val time = (t2 - t1) / 1e6
         when (request.method) {
             "GET" -> logger.info(java.lang.String.format("GET $F_REQUEST_WITHOUT_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, response.code, stringifyResponseBody(bodyString)))
-            "POST" -> logger.info(java.lang.String.format("POST $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, JsonWriter.formatJson(stringifyRequestBody(request)), response.code, stringifyResponseBody(bodyString)))
-            "PUT" -> logger.info(java.lang.String.format("PUT $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, JsonWriter.formatJson(stringifyRequestBody(request)), response.code, stringifyResponseBody(bodyString)))
-            "PATCH" -> logger.info(java.lang.String.format("PATCH $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, JsonWriter.formatJson(stringifyRequestBody(request)), response.code, stringifyResponseBody(bodyString)))
-            "DELETE" -> logger.info(java.lang.String.format("DELETE $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, JsonWriter.formatJson(stringifyRequestBody(request)), response.code, stringifyResponseBody(bodyString)))
+            "POST" -> logger.info(java.lang.String.format("POST $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, stringifyRequestBody(request), response.code, stringifyResponseBody(bodyString)))
+            "PUT" -> logger.info(java.lang.String.format("PUT $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, stringifyRequestBody(request), response.code, stringifyResponseBody(bodyString)))
+            "PATCH" -> logger.info(java.lang.String.format("PATCH $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, stringifyRequestBody(request), response.code, stringifyResponseBody(bodyString)))
+            "DELETE" -> logger.info(java.lang.String.format("DELETE $F_REQUEST_WITH_BODY$F_RESPONSE_WITH_BODY", request.url, time, request.headers, stringifyRequestBody(request), response.code, stringifyResponseBody(bodyString)))
             else -> {
-                logger.info("Unknown request: " + request.method)
+                logger.severe("Unknown request: " + request.method)
             }
         }
 
@@ -42,7 +43,12 @@ internal class LoggingInterceptor : Interceptor {
     }
 
     private fun stringifyResponseBody(responseBody: String?): String? {
-        return JsonWriter.formatJson(responseBody)
+        return try{
+            JsonWriter.formatJson(responseBody)
+        } catch(e: JsonIoException){
+            logger.severe("The response body contains invalid JSON")
+            responseBody
+        }
     }
 
     companion object {
@@ -58,13 +64,16 @@ internal class LoggingInterceptor : Interceptor {
         private const val F_REQUEST_WITH_BODY = F_URL + F_TIME + F_BREAK + F_HEADERS + F_BODY + F_BREAK
         private const val F_RESPONSE_WITH_BODY = F_RESPONSE + F_BREAK + F_BODY + F_BREAK + F_BREAKER
         private fun stringifyRequestBody(request: Request): String {
-            return try {
-                val copy: Request = request.newBuilder().build()
-                val buffer = Buffer()
+            val copy: Request = request.newBuilder().build()
+            val buffer = Buffer()
+            copy.body!!.writeTo(buffer)
+            return try{
+                copy.body!!.writeTo(buffer)
+                JsonWriter.formatJson(buffer.readUtf8())
+            } catch(e: JsonIoException){
+                logger.severe("The request body contains invalid JSON")
                 copy.body!!.writeTo(buffer)
                 buffer.readUtf8()
-            } catch (e: IOException) {
-                "error: $e"
             }
         }
     }

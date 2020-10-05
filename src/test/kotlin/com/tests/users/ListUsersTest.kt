@@ -49,8 +49,8 @@ class ListUsersTest : BaseTest() {
 
     @Test(description = "Валидация списка пользователей", dataProvider = "positivePages")
     fun validateUsersDetailsTest(page: Int) {
-        val usersJson: JSONObject = get(Endpoints.USERS.URL + "?page=$page", Status.OK.code)
-        val users = Json.decodeFromString(ListUsersModel.serializer(), usersJson.toString())
+        val response: JSONObject = get(Endpoints.USERS.URL + "?page=$page", Status.OK.code)
+        val users = Json.decodeFromString(ListUsersModel.serializer(), response.toString())
         assertThat(users.page, equalTo(page))
         assertThat(users.total, greaterThanOrEqualTo(users.per_page))
         assertThat(users.per_page, equalTo(usersPerPage))
@@ -70,20 +70,20 @@ class ListUsersTest : BaseTest() {
     /*** Предположим что нам заранее известны точные данные, которые мы получим с 1 страницы*/
     @Test(description = "Демонстрация теста для валидации через JsonPath")
     fun exampleJsonPathTest() {
-        val usersJson: JSONObject = get(Endpoints.USERS.URL + "?page=1", Status.OK.code)
-        assertThat(parseJson(usersJson, "data").size, equalTo(usersJson.getJSONArray("data").length()))
-        assertThat(parseJson(usersJson, "data[*].id"), equalTo(users.stream().map { user -> user.id }.collect(toList())))
-        assertThat(parseJson(usersJson, "data[*].email"), equalTo(users.stream().map { user -> user.email }.collect(toList())))
-        assertThat(parseJson(usersJson, "data[*].first_name"), equalTo(users.stream().map { user -> user.firstName }.collect(toList())))
-        assertThat(parseJson(usersJson, "data[*].last_name"), equalTo(users.stream().map { user -> user.lastName }.collect(toList())))
-        assertThat(parseJson(usersJson, "data[*].avatar"), equalTo(users.stream().map { user -> user.avatar }.collect(toList())))
+        val response: JSONObject = get(Endpoints.USERS.URL + "?page=1", Status.OK.code)
+        assertThat(parseJson(response, "data").size, equalTo(response.getJSONArray("data").length()))
+        assertThat(parseJson(response, "data[*].id"), equalTo(users.stream().map { user -> user.id }.collect(toList())))
+        assertThat(parseJson(response, "data[*].email"), equalTo(users.stream().map { user -> user.email }.collect(toList())))
+        assertThat(parseJson(response, "data[*].first_name"), equalTo(users.stream().map { user -> user.firstName }.collect(toList())))
+        assertThat(parseJson(response, "data[*].last_name"), equalTo(users.stream().map { user -> user.lastName }.collect(toList())))
+        assertThat(parseJson(response, "data[*].avatar"), equalTo(users.stream().map { user -> user.avatar }.collect(toList())))
     }
 
     @Test(description = "Демонстрация теста для валидации через сравнение объектов")
     fun exampleCompareObjectsTest() {
-        val usersJson: JSONObject = get(Endpoints.USERS.URL + "?page=1", Status.OK.code)
+        val response: JSONObject = get(Endpoints.USERS.URL + "?page=1", Status.OK.code)
         for (i in users.indices) {
-            val userInResponse = Json.decodeFromString(UserDataModel.serializer(), usersJson.getJSONArray("data")[i].toString())
+            val userInResponse = Json.decodeFromString(UserDataModel.serializer(), response.getJSONArray("data")[i].toString())
             assertThat(users[i], equalTo(userInResponse))
         }
     }
@@ -91,7 +91,7 @@ class ListUsersTest : BaseTest() {
     @DataProvider
     fun emptyPages(): Array<Array<Int>> {
         return arrayOf(
-                arrayOf(-1),
+                arrayOf(-1), // падает т.к. на -1 странице не должно быть пользователей
                 arrayOf(3),
                 arrayOf(999),
         )
@@ -99,8 +99,8 @@ class ListUsersTest : BaseTest() {
 
     @Test(description = "Проверка пустых страниц", dataProvider = "emptyPages")
     fun otherPagesTest(page: Int) {
-        val usersJson: JSONObject = get(Endpoints.USERS.URL + "?page=$page", Status.OK.code)
-        val users = Json.decodeFromString(ListUsersModel.serializer(), usersJson.toString())
+        val response: JSONObject = get(Endpoints.USERS.URL + "?page=$page", Status.OK.code)
+        val users = Json.decodeFromString(ListUsersModel.serializer(), response.toString())
         assertThat(users.data, hasSize(0))
         assertThat(users.page, equalTo(page))
         assertThat(users.per_page, equalTo(usersPerPage))
@@ -121,8 +121,8 @@ class ListUsersTest : BaseTest() {
 
     @Test(description = "Проверка нулевой старницы", dataProvider = "otherPages")
     fun firstPageTest(search: String) {
-        val usersJson: JSONObject = get(Endpoints.USERS.URL + search, Status.OK.code)
-        val users = Json.decodeFromString(ListUsersModel.serializer(), usersJson.toString())
+        val response: JSONObject = get(Endpoints.USERS.URL + search, Status.OK.code)
+        val users = Json.decodeFromString(ListUsersModel.serializer(), response.toString())
         assertThat(users.data.size, not(equalTo(0)))
         assertThat(users.page, equalTo(1))
     }
