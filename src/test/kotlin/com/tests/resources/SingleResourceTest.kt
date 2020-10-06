@@ -4,7 +4,7 @@ import com.BaseTest
 import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
-import com.models.request.users.UpdateUserModel
+import com.models.request.resource.UpdateResourceModel
 import com.models.response.resource.SingleResourceModel
 import com.models.response.resource.UpdatedResourceModel
 import kotlinx.serialization.json.Json
@@ -26,13 +26,13 @@ class SingleResourceTest : BaseTest() {
     }
 
     @Test(description = "Валидация деталей ответа для одного ресурса", dataProvider = "positiveResourcesId")
-    fun validateSingleResourceDetailsTest(userId: Int) {
-        val response: JSONObject = get(Endpoints.RESOURCE.URL + "/$userId", Status.OK.code)
+    fun validateSingleResourceDetailsTest(resourceId: Int) {
+        val response: JSONObject = get(Endpoints.RESOURCE.URL + "/$resourceId", Status.OK.code)
         val resource = Json.decodeFromString(SingleResourceModel.serializer(), response.toString())
         assertThat(resource.ad.company, equalTo(DataBank.AD_COMPANY.get()))
         assertThat(resource.ad.text, equalTo(DataBank.AD_TEXT.get()))
         assertThat(resource.ad.url, equalTo(DataBank.AD_URL.get()))
-        assertThat(resource.data.id, equalTo(userId))
+        assertThat(resource.data.id, equalTo(resourceId))
         assertThat(resource.data.name, matchesPattern(DataBank.RESOURCE_NAME_PATTERN.get()))
         assertThat(resource.data.year, allOf(greaterThanOrEqualTo(1900), lessThanOrEqualTo(2100)))
         assertThat(resource.data.color, matchesPattern(DataBank.COLOR_PATTERN.get()))
@@ -50,14 +50,14 @@ class SingleResourceTest : BaseTest() {
     }
 
     @Test(description = "Проверка результатов запроса с неверными параметрами", dataProvider = "invalidResourcesId")
-    fun invalidBodyForSingleResourceTest(userId: String) {
-        val response: JSONObject = get(Endpoints.RESOURCE.URL + userId, Status.NOT_FOUND.code)
+    fun invalidBodyForSingleResourceTest(resourceId: String) {
+        val response: JSONObject = get(Endpoints.RESOURCE.URL + resourceId, Status.NOT_FOUND.code)
         assertThat("{}", equalTo(response.toString()))
     }
 
     @Test(description = "delete запрос на несуществующие эндпоинты", dataProvider = "invalidResourcesId")
-    fun negativeDeleteResourceTest(userId: String) {
-        delete(Endpoints.RESOURCE.URL + userId, Status.BAD_REQUEST.code) // падает потому что delete запрос на любой эндпоинт возвращает 204
+    fun negativeDeleteResourceTest(resourceId: String) {
+        delete(Endpoints.RESOURCE.URL + resourceId, Status.BAD_REQUEST.code) // падает потому что delete запрос на любой эндпоинт возвращает 204
     }
 
     @Test(description = "Удаление ресурса")
@@ -68,11 +68,11 @@ class SingleResourceTest : BaseTest() {
     @DataProvider
     fun updateBody(): Array<Array<String>> {
         return arrayOf(
-                arrayOf(UpdateUserModel("morpheus1950", "zion resident").getBody()),
-                arrayOf(UpdateUserModel(getRandomString(200), getRandomString(200)).getBody()),
+                arrayOf(UpdateResourceModel("morpheus1950", "zion resident").getBody()),
+                arrayOf(UpdateResourceModel(getRandomString(200), getRandomString(200)).getBody()),
                 arrayOf("{}"),
                 arrayOf(""),
-                arrayOf(UpdateUserModel("", "").getBody()),
+                arrayOf(UpdateResourceModel("", "").getBody()),
                 arrayOf("{\"job\": \"morpheus\", \"invalidIntField\": -5}"),
                 arrayOf("{\"invalidBooleanField\": true, \"name\": \"morpheus\"}"),
         )
@@ -90,7 +90,7 @@ class SingleResourceTest : BaseTest() {
     }
 
     @Test(description = "Отправка patch запроса с телом не в формате Json")
-    fun negativeUpdateUserTest() {
+    fun negativeUpdateResourceTest() {
         patch(Endpoints.RESOURCE.URL + "/1", "Не Json", Status.BAD_REQUEST.code) // падает т.к. возвращается не Json
     }
 }
