@@ -10,7 +10,7 @@ import java.util.function.Consumer
 
 @Serializable
 data class UserDataModel(
-        @Required var id: Int? = null,
+        @Required override var id: Int? = null,
         @Required var email: String = Faker.faker.internet().emailAddress(),
         @Required @SerialName("first_name") var firstName: String = Faker.faker.name().firstName(),
         @Required @SerialName("last_name") var lastName: String = Faker.faker.name().lastName(),

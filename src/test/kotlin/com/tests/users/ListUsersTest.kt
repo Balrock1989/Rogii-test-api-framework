@@ -6,6 +6,7 @@ import com.api.Status
 import com.data.DataBank
 import com.models.general.dataObjects.UserDataModel
 import com.models.response.users.ListUsersModel
+import io.qameta.allure.Step
 import kotlinx.serialization.json.Json
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
@@ -21,6 +22,7 @@ class ListUsersTest : BaseTest() {
     private var users = ArrayList<UserDataModel>()
     private val usersPerPage: Int = 6
 
+    @Step("Создание пользователей")
     @BeforeClass(description ="Предположим что нам заранее известны точные данные, которые мы получим с 1 страницы")
     fun prepare() {
         val user = UserDataModel {

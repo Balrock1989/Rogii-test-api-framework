@@ -9,14 +9,15 @@ import java.lang.reflect.Method
 open class BaseTest : DataGenerator() {
 
     /*** Логирование названия теста*/
-    @BeforeMethod
+    @BeforeMethod(description = "Логирование названия тестового метода")
     open fun handleTestMethodName(method: Method) {
         if (System.getProperty("config.logger").toBoolean())
             logger.info("***************** Run Test: " + method.declaringClass.name.toString() + "." + method.name.toString() + " *****************")
     }
 
     /*** Очистка тестовых данных*/
-    @AfterSuite
+    @AfterSuite(description = "Очистка тестовых данных")
     fun clear() {
+        cleanObjects()
     }
 }

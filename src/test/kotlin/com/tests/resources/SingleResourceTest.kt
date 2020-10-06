@@ -20,10 +20,11 @@ import org.testng.annotations.Test
 class SingleResourceTest : BaseTest() {
     private lateinit var exampleResource: ResourceDataModel
 
-    @BeforeClass
+    @BeforeClass(description = "Создание тестовых данных")
     fun prepare(){
         exampleResource = newResource()
     }
+
     @DataProvider
     fun positiveResourcesId(): Array<Array<Int>> {
         return arrayOf(

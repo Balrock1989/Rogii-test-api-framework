@@ -11,7 +11,7 @@ import java.util.function.Consumer
 
 @Serializable
 data class ResourceDataModel(
-        @Required var id: Int? = null,
+        @Required override var id: Int? = null,
         @Required var name: String = Faker.faker.company().name(),
         @Required var color: String = Faker.faker.color().name(),
         @Required @SerialName("pantone_value") var pantone: String = Faker.faker.address().buildingNumber(),

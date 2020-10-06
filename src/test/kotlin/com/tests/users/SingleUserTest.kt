@@ -20,7 +20,7 @@ import org.testng.annotations.Test
 class SingleUserTest : BaseTest() {
     private lateinit var exampleUser: UserDataModel
 
-    @BeforeClass
+    @BeforeClass(description = "Создание тестовых данных")
     fun prepare(){
         exampleUser = newUser()
     }
