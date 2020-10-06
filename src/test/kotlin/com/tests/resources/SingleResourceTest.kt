@@ -57,7 +57,9 @@ class SingleResourceTest : BaseTest() {
 
     @Test(description = "delete запрос на несуществующие эндпоинты", dataProvider = "invalidResourcesId")
     fun negativeDeleteResourceTest(resourceId: String) {
-        delete(Endpoints.RESOURCE.URL + resourceId, Status.BAD_REQUEST.code) // падает потому что delete запрос на любой эндпоинт возвращает 204
+        delete(Endpoints.RESOURCE.URL + resourceId, Status.BAD_REQUEST.code)
+        // delete должен возвращать статус 204, если запрашиваемый ресурс существует, и он был успешно удалён
+        // здесь delete всегда возвращает 204
     }
 
     @Test(description = "Удаление ресурса")
@@ -91,6 +93,7 @@ class SingleResourceTest : BaseTest() {
 
     @Test(description = "Отправка patch запроса с телом не в формате Json")
     fun negativeUpdateResourceTest() {
-        patch(Endpoints.RESOURCE.URL + "/1", "Не Json", Status.BAD_REQUEST.code) // падает т.к. возвращается не Json
+        patch(Endpoints.RESOURCE.URL + "/1", "Не Json", Status.BAD_REQUEST.code)
+        //Некорректное тело должно валидироваться на BE, и отдавать в ответе JSON, вместо HTML
     }
 }

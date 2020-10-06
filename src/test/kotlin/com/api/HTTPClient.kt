@@ -7,6 +7,7 @@ import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 
+/*** Конфигурация HTTP клиента*/
 open class HTTPClient {
     val mediaType: MediaType = "application/json; charset=utf-8".toMediaType()
     val headers: Headers = Headers.Builder()

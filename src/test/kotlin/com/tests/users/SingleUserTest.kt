@@ -4,14 +4,11 @@ import com.BaseTest
 import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
-import com.fasterxml.jackson.databind.ser.std.StdJdkSerializers.all
 import com.models.request.users.UpdateUserModel
 import com.models.response.users.SingleUserModel
 import com.models.response.users.UpdatedUserModel
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.serializer
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.text.MatchesPattern.matchesPattern
 import org.json.JSONObject
@@ -40,6 +37,8 @@ class SingleUserTest : BaseTest() {
         assertThat(user.data.lastName, matchesPattern(DataBank.USER_NAME_PATTERN.get()))
         assertThat(user.data.email, matchesPattern(DataBank.EMAIL_PATTERN.get()))
         assertThat(user.data.avatar, matchesPattern(DataBank.URL_PATTERN.get()))
+        // Изначально проверяется статус ответа, затем соответствие Json схеме, затем т.к. нам заранее не известны точные имена
+        // проверяется соответствие свойств по шаблону регулярного выражения
     }
 
     @DataProvider
@@ -60,7 +59,9 @@ class SingleUserTest : BaseTest() {
 
     @Test(description = "delete запрос на несуществующие эндпоинты", dataProvider = "invalidUsersId")
     fun negativeDeleteUserTest(userId: String) {
-        delete(Endpoints.USERS.URL + userId, Status.BAD_REQUEST.code) // падает потому что delete запрос на любой эндпоинт возвращает 204
+        delete(Endpoints.USERS.URL + userId, Status.BAD_REQUEST.code)
+        // delete должен возвращать статус 204, если запрашиваемый ресурс существует, и он был успешно удалён
+        // здесь delete всегда возвращает 204
     }
 
     @Test(description = "Удаление пользователя")
@@ -71,13 +72,13 @@ class SingleUserTest : BaseTest() {
     @DataProvider
     fun updateBody(): Array<Array<String>> {
         return arrayOf(
-                arrayOf(UpdateUserModel("morpheus", "zion resident").getBody()),
-                arrayOf(UpdateUserModel(getRandomString(200), getRandomString(200)).getBody()),
-                arrayOf("{}"),
-                arrayOf(""),
-                arrayOf(UpdateUserModel("", "").getBody()),
-                arrayOf("{\"job\": \"morpheus\", \"invalidIntField\": -5}"),
-                arrayOf("{\"invalidBooleanField\": true, \"name\": \"morpheus\"}"),
+                arrayOf(UpdateUserModel("morpheus", "zion resident").getBody()), //Позитивные данные из примера
+                arrayOf(UpdateUserModel(getRandomString(200), getRandomString(200)).getBody()), // Длинные строки с цифрами
+                arrayOf("{}"), //Пустое тело Json
+                arrayOf(""), // Без тела
+                arrayOf(UpdateUserModel("", "").getBody()), // Пустые значения
+                arrayOf("{\"job\": \"morpheus\", \"invalidIntField\": -5}"), // Int значение
+                arrayOf("{\"invalidBooleanField\": true, \"name\": \"morpheus\"}"), // Boolean значение
         )
     }
 
@@ -87,13 +88,14 @@ class SingleUserTest : BaseTest() {
         val updatedUser = Json.decodeFromString(UpdatedUserModel.serializer(), response.toString())
         assertThat(updatedUser.updatedAt, matchesPattern(DataBank.UPDATE_AT_PATTERN.get()))
         val expectedUserJson = if (body != "") JSONObject(body) else JSONObject()
-        expectedUserJson.put("updatedAt",updatedUser.updatedAt)
+        expectedUserJson.put("updatedAt", updatedUser.updatedAt)
         val expectedUser = Json.decodeFromString(UpdatedUserModel.serializer(), expectedUserJson.toString())
         assertThat(updatedUser, equalTo(expectedUser))
     }
 
     @Test(description = "Отправка patch запроса с телом не в формате Json")
     fun negativeUpdateUserTest() {
-        patch(Endpoints.USERS.URL + "/1", "Не Json", Status.BAD_REQUEST.code) // падает т.к. возвращается не Json
+        patch(Endpoints.USERS.URL + "/1", "Не Json", Status.BAD_REQUEST.code)
+        //Некорректное тело должно валидироваться на BE, и отдавать в ответе JSON, вместо HTML
     }
 }

@@ -21,7 +21,7 @@ class ListUsersTest : BaseTest() {
     private var users = ArrayList<UserDataModel>()
     private val usersPerPage: Int = 6
 
-    @BeforeClass
+    @BeforeClass(description ="Предположим что нам заранее известны точные данные, которые мы получим с 1 страницы")
     fun prepare() {
         val user = UserDataModel {
             it.id = 1
@@ -30,13 +30,14 @@ class ListUsersTest : BaseTest() {
             it.lastName = "Bluth"
             it.avatar = "https://s3.amazonaws.com/uifaces/faces/twitter/calebogden/128.jpg"
         }
+        // user создан с помощью универсального конструктора, если какие то поля не будут заполнены, то они заполнятся автоматически
+        // Но при сериализации/десериализации автоматического заполнения не будет, т.к. поля отмечены как required
         users.add(user)
         users.add(UserDataModel(2, "janet.weaver@reqres.in", "Janet", "Weaver", "https://s3.amazonaws.com/uifaces/faces/twitter/josephstein/128.jpg"))
         users.add(UserDataModel(3, "emma.wong@reqres.in", "Emma", "Wong", "https://s3.amazonaws.com/uifaces/faces/twitter/olegpogodaev/128.jpg"))
         users.add(UserDataModel(4, "eve.holt@reqres.in", "Eve", "Holt", "https://s3.amazonaws.com/uifaces/faces/twitter/marcoramires/128.jpg"))
         users.add(UserDataModel(5, "charles.morris@reqres.in", "Charles", "Morris", "https://s3.amazonaws.com/uifaces/faces/twitter/stephenmoon/128.jpg"))
         users.add(UserDataModel(6, "tracey.ramos@reqres.in", "Tracey", "Ramos", "https://s3.amazonaws.com/uifaces/faces/twitter/bigmancho/128.jpg"))
-
     }
 
     @DataProvider
@@ -67,7 +68,6 @@ class ListUsersTest : BaseTest() {
         }
     }
 
-    /*** Предположим что нам заранее известны точные данные, которые мы получим с 1 страницы*/
     @Test(description = "Демонстрация теста для валидации через JsonPath")
     fun exampleJsonPathTest() {
         val response: JSONObject = get(Endpoints.USERS.URL + "?page=1", Status.OK.code)
