@@ -5,7 +5,6 @@ import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
 import com.models.response.resource.ListResourceModel
-import com.models.response.users.ListUsersModel
 import kotlinx.serialization.json.Json
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
@@ -77,8 +76,8 @@ class ListResourceTest : BaseTest() {
 
     @Test(description = "Проверка нулевой старницы", dataProvider = "otherPages")
     fun firstPageTest(search: String) {
-        val response: JSONObject = get(Endpoints.USERS.URL + search, Status.OK.code)
-        val resources = Json.decodeFromString(ListUsersModel.serializer(), response.toString())
+        val response: JSONObject = get(Endpoints.RESOURCE.URL + search, Status.OK.code)
+        val resources = Json.decodeFromString(ListResourceModel.serializer(), response.toString())
         assertThat(resources.data.size, not(equalTo(0)))
         assertThat(resources.page, equalTo(1))
     }
