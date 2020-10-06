@@ -4,6 +4,7 @@ import com.BaseTest
 import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
+import com.models.general.dataObjects.UserDataModel
 import com.models.request.users.UpdateUserModel
 import com.models.response.users.SingleUserModel
 import com.models.response.users.UpdatedUserModel
@@ -12,11 +13,17 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.text.MatchesPattern.matchesPattern
 import org.json.JSONObject
+import org.testng.annotations.BeforeClass
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
 class SingleUserTest : BaseTest() {
+    private lateinit var exampleUser: UserDataModel
 
+    @BeforeClass
+    fun prepare(){
+        exampleUser = newUser()
+    }
     @DataProvider
     fun positiveUsersId(): Array<Array<Int>> {
         return arrayOf(

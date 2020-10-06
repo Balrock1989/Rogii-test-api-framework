@@ -4,6 +4,7 @@ import com.BaseTest
 import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
+import com.models.general.dataObjects.ResourceDataModel
 import com.models.request.resource.UpdateResourceModel
 import com.models.response.resource.SingleResourceModel
 import com.models.response.resource.UpdatedResourceModel
@@ -12,11 +13,17 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.hamcrest.text.MatchesPattern
 import org.json.JSONObject
+import org.testng.annotations.BeforeClass
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
 class SingleResourceTest : BaseTest() {
+    private lateinit var exampleResource: ResourceDataModel
 
+    @BeforeClass
+    fun prepare(){
+        exampleResource = newResource()
+    }
     @DataProvider
     fun positiveResourcesId(): Array<Array<Int>> {
         return arrayOf(

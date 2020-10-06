@@ -4,6 +4,8 @@ package com.data
 import com.api.Endpoints
 import com.api.Requests
 import com.api.Status
+import com.models.general.dataObjects.ResourceDataModel
+import com.models.general.dataObjects.UserDataModel
 import com.models.request.register.RegisterModel
 import com.models.response.register.PositiveRegisterModel
 import com.models.response.users.ListUsersModel
@@ -16,7 +18,6 @@ open class DataGenerator : Requests(), RandomStringGenerator {
 
     @Step("Регистрация в системе нового пользователя")
     fun registerNewUser(login: String, password: String): PositiveRegisterModel {
-
         val usersJson: JSONObject = post(Endpoints.REGISTER.URL, RegisterModel(login, password).getBody(), Status.OK.code)
         return Json.decodeFromString(PositiveRegisterModel.serializer(), usersJson.toString())
     }
@@ -25,5 +26,15 @@ open class DataGenerator : Requests(), RandomStringGenerator {
     fun getUsersInPage(page: Int): ListUsersModel {
         val usersJson: JSONObject = get(Endpoints.USERS.URL + "?page=$page", Status.OK.code)
         return Json.decodeFromString(ListUsersModel.serializer(), usersJson.toString())
+    }
+
+    @Step("Создание в системе нового пользователя")
+    fun newUser(): UserDataModel {
+        return create(Endpoints.USERS.URL, UserDataModel())
+    }
+
+    @Step("Создание в системе нового ресурса")
+    fun newResource(): ResourceDataModel {
+        return create(Endpoints.RESOURCE.URL, ResourceDataModel())
     }
 }
