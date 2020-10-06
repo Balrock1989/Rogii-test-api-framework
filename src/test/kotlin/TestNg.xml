@@ -1,5 +1,5 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-    <suite name="Rogii" parallel="methods" thread-count="1">
+    <suite name="Rogii" parallel="methods" thread-count="2">
     <test name="RogiiTests">
         <classes>
             <class name="com.tests.users.ListUsersTest" />
