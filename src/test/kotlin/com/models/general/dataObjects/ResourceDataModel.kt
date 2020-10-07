@@ -11,11 +11,10 @@ import java.util.function.Consumer
 
 @Serializable
 data class ResourceDataModel(
-//        @Required override var id: Int? = null,
-        @Required var name: String = Faker.faker.company().name(),
-        @Required var color: String = Faker.faker.color().name(),
-        @Required @SerialName("pantone_value") var pantone: String = Faker.faker.address().buildingNumber(),
-        @Required var year: Int = Faker.faker.number().randomDigitNotZero(),
+        @Required var name: String = Faker.faker.color().name(),
+        @Required var color: String = Faker.faker.color().hex(),
+        @Required @SerialName("pantone_value") var pantone: String = Faker.faker.number().numberBetween(10, 99).toString() + "-" + Faker.faker.number().numberBetween(1000, 9999),
+        @Required var year: Int = Faker.faker.number().numberBetween(1900, 2200),
         var createdAt: String? = null
 
 ) : BaseModel<ResourceDataModel>() {

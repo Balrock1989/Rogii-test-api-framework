@@ -24,7 +24,7 @@ class SingleResourceTest : BaseTest() {
     @BeforeClass(description = "Создание тестовых данных")
     fun prepare(){
         exampleRandomResource = newResource()
-        exampleModelResource = newResource(ResourceDataModel{it.name="myColor"; it.pantone = "9999"})
+        exampleModelResource = newResource(ResourceDataModel{it.name="myColor"; it.pantone = "14-9999"})
     }
 
     @DataProvider

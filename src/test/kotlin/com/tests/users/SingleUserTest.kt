@@ -4,6 +4,7 @@ import com.BaseTest
 import com.api.Endpoints
 import com.api.Status
 import com.data.DataBank
+import com.data.Faker
 import com.models.general.dataObjects.UserDataModel
 import com.models.request.users.UpdateUserModel
 import com.models.response.users.SingleUserModel
@@ -38,6 +39,7 @@ class SingleUserTest : BaseTest() {
 
     @Test(description = "Валидация деталей ответа для одного пользователя", dataProvider = "positiveUsersId")
     fun validateSingleUsersDetailsTest(userId: Int) {
+        Faker.faker.lorem()
         val response: JSONObject = get(Endpoints.USERS.URL + "/$userId", Status.OK.code)
         val user = Json.decodeFromString(SingleUserModel.serializer(), response.toString())
         assertThat(user.ad.company, equalTo(DataBank.AD_COMPANY.get()))
