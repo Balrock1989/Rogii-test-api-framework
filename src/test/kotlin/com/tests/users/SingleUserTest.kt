@@ -18,11 +18,15 @@ import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
 class SingleUserTest : BaseTest() {
-    private lateinit var exampleUser: UserDataModel
+    private lateinit var exampleRandomUser: UserDataModel
+    private lateinit var exampleModelUser: UserDataModel
 
     @BeforeClass(description = "Создание тестовых данных")
     fun prepare(){
-        exampleUser = newUser()
+        exampleRandomUser = newUser()
+        exampleModelUser = newUser(UserDataModel{it.lastName = "Khizhov"; it.firstName= "Dmitriy";})
+        // exampleModelUser создан с помощью универсального конструктора, если какие то поля не будут заполнены, то они заполнятся автоматически
+        // Но при сериализации/десериализации автоматического заполнения не будет, т.к. поля отмечены как required
     }
     @DataProvider
     fun positiveUsersId(): Array<Array<Int>> {

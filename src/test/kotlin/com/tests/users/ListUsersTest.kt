@@ -23,23 +23,14 @@ class ListUsersTest : BaseTest() {
     private val usersPerPage: Int = 6
 
     @Step("Создание пользователей")
-    @BeforeClass(description ="Предположим что нам заранее известны точные данные, которые мы получим с 1 страницы")
+    @BeforeClass(description = "Предположим что нам заранее известны точные данные, которые мы получим с 1 страницы")
     fun prepare() {
-        val user = UserDataModel {
-            it.id = 1
-            it.email = "george.bluth@reqres.in"
-            it.firstName = "George"
-            it.lastName = "Bluth"
-            it.avatar = "https://s3.amazonaws.com/uifaces/faces/twitter/calebogden/128.jpg"
-        }
-        // user создан с помощью универсального конструктора, если какие то поля не будут заполнены, то они заполнятся автоматически
-        // Но при сериализации/десериализации автоматического заполнения не будет, т.к. поля отмечены как required
-        users.add(user)
-        users.add(UserDataModel(2, "janet.weaver@reqres.in", "Janet", "Weaver", "https://s3.amazonaws.com/uifaces/faces/twitter/josephstein/128.jpg"))
-        users.add(UserDataModel(3, "emma.wong@reqres.in", "Emma", "Wong", "https://s3.amazonaws.com/uifaces/faces/twitter/olegpogodaev/128.jpg"))
-        users.add(UserDataModel(4, "eve.holt@reqres.in", "Eve", "Holt", "https://s3.amazonaws.com/uifaces/faces/twitter/marcoramires/128.jpg"))
-        users.add(UserDataModel(5, "charles.morris@reqres.in", "Charles", "Morris", "https://s3.amazonaws.com/uifaces/faces/twitter/stephenmoon/128.jpg"))
-        users.add(UserDataModel(6, "tracey.ramos@reqres.in", "Tracey", "Ramos", "https://s3.amazonaws.com/uifaces/faces/twitter/bigmancho/128.jpg"))
+        users.add(UserDataModel{it.id=1;it.email="george.bluth@reqres.in";it.firstName="George";it.lastName="Bluth";it.avatar="https://s3.amazonaws.com/uifaces/faces/twitter/calebogden/128.jpg"})
+        users.add(UserDataModel{it.id=2;it.email="janet.weaver@reqres.in";it.firstName="Janet";it.lastName="Weaver";it.avatar="https://s3.amazonaws.com/uifaces/faces/twitter/josephstein/128.jpg"})
+        users.add(UserDataModel{it.id=3;it.email="emma.wong@reqres.in";it.firstName="Emma";it.lastName="Wong";it.avatar="https://s3.amazonaws.com/uifaces/faces/twitter/olegpogodaev/128.jpg"})
+        users.add(UserDataModel{it.id=4;it.email="eve.holt@reqres.in";it.firstName="Eve";it.lastName="Holt";it.avatar="https://s3.amazonaws.com/uifaces/faces/twitter/marcoramires/128.jpg"})
+        users.add(UserDataModel{it.id=5;it.email="charles.morris@reqres.in";it.firstName="Charles";it.lastName="Morris";it.avatar="https://s3.amazonaws.com/uifaces/faces/twitter/stephenmoon/128.jpg"})
+        users.add(UserDataModel{it.id=6;it.email="tracey.ramos@reqres.in";it.firstName="Tracey";it.lastName="Ramos";it.avatar="https://s3.amazonaws.com/uifaces/faces/twitter/bigmancho/128.jpg"})
     }
 
     @DataProvider

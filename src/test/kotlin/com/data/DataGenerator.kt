@@ -44,9 +44,23 @@ open class DataGenerator : Requests(), RandomStringGenerator {
         return user
     }
 
+    @Step("Создание в системе нового пользователя по модели")
+    fun newUser(model: UserDataModel): UserDataModel {
+        val user = create(Endpoints.USERS.URL, model)
+        addObject(user, Endpoints.USERS.URL)
+        return user
+    }
+
     @Step("Создание в системе нового ресурса")
     fun newResource(): ResourceDataModel {
         val resource = create(Endpoints.RESOURCE.URL, ResourceDataModel())
+        addObject(resource, Endpoints.RESOURCE.URL)
+        return resource
+    }
+
+    @Step("Создание в системе нового ресурса по модели")
+    fun newResource(model: ResourceDataModel): ResourceDataModel {
+        val resource = create(Endpoints.RESOURCE.URL, model)
         addObject(resource, Endpoints.RESOURCE.URL)
         return resource
     }

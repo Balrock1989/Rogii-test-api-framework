@@ -18,11 +18,13 @@ import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
 class SingleResourceTest : BaseTest() {
-    private lateinit var exampleResource: ResourceDataModel
+    private lateinit var exampleRandomResource: ResourceDataModel
+    private lateinit var exampleModelResource: ResourceDataModel
 
     @BeforeClass(description = "Создание тестовых данных")
     fun prepare(){
-        exampleResource = newResource()
+        exampleRandomResource = newResource()
+        exampleModelResource = newResource(ResourceDataModel{it.name="myColor"; it.pantone = "9999"})
     }
 
     @DataProvider
