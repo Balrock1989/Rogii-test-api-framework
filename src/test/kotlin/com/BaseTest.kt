@@ -16,7 +16,7 @@ open class BaseTest : DataGenerator() {
     }
 
     /*** Очистка тестовых данных*/
-    @AfterSuite(description = "Очистка тестовых данных")
+    @AfterSuite(description = "Очистка тестовых данных", alwaysRun = true)
     fun clear() {
         cleanObjects()
     }
