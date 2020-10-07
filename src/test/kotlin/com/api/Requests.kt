@@ -80,8 +80,7 @@ open class Requests : ApiRequestHelper() {
             return if (it.promisesBody()) JSONObject(it.body!!.string()) else JSONObject()
         }
     }
-
-    @Step("Создание объекта")
+    /*** Создание объекта в системе*/
     fun <T : BaseModel<T>> create(url: String, model: T): T {
         val requestBody: RequestBody = model.getBody().toRequestBody(mediaType)
         val request = Request.Builder()

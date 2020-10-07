@@ -8,7 +8,6 @@ import kotlinx.serialization.json.Json
 data class RegisterModel(
         @Required val email: String,
         @Required val password: String,
-
         ) {
     fun getBody(): String {
         return Json.encodeToString(serializer(), this)
