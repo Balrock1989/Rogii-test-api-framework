@@ -23,7 +23,8 @@ open class Requests : ApiRequestHelper() {
                 .build()
         client.newCall(request).execute().use {
             checkStatus(it.code, expectedCode)
-            return if (it.promisesBody()) JSONObject(it.body!!.string()) else JSONObject()
+            val response: String = it.body!!.string()
+            return if (response != "") JSONObject(response) else JSONObject()
         }
     }
 
@@ -36,7 +37,8 @@ open class Requests : ApiRequestHelper() {
                 .build()
         client.newCall(request).execute().use {
             checkStatus(it.code, expectedCode)
-            return if (it.promisesBody()) JSONObject(it.body!!.string()) else JSONObject()
+            val response: String = it.body!!.string()
+            return if (response != "") JSONObject(response) else JSONObject()
         }
     }
 
@@ -50,7 +52,8 @@ open class Requests : ApiRequestHelper() {
                 .build()
         client.newCall(request).execute().use {
             checkStatus(it.code, expectedCode)
-            return if (it.promisesBody()) JSONObject(it.body!!.string()) else JSONObject()
+            val response: String = it.body!!.string()
+            return if (response != "") JSONObject(response) else JSONObject()
         }
     }
 
@@ -63,7 +66,8 @@ open class Requests : ApiRequestHelper() {
                 .build()
         client.newCall(request).execute().use {
             checkStatus(it.code, expectedCode)
-            return if (it.promisesBody()) JSONObject(it.body!!.string()) else JSONObject()
+            val response: String = it.body!!.string()
+            return if (response != "") JSONObject(response) else JSONObject()
         }
     }
 
@@ -77,7 +81,8 @@ open class Requests : ApiRequestHelper() {
                 .build()
         client.newCall(request).execute().use {
             checkStatus(it.code, expectedCode)
-            return if (it.promisesBody()) JSONObject(it.body!!.string()) else JSONObject()
+            val response: String = it.body!!.string()
+            return if (response != "") JSONObject(response) else JSONObject()
         }
     }
     /*** Создание объекта в системе*/
@@ -90,7 +95,8 @@ open class Requests : ApiRequestHelper() {
                 .build()
         client.newCall(request).execute().use {
             if (!it.isSuccessful) throw IOException("Unexpected code $it")
-            return if (it.promisesBody()) Json.decodeFromString(model.getSerializer(), it.body!!.string()) else throw IOException()
+            val response: String = it.body!!.string()
+            return if (response != "") Json.decodeFromString(model.getSerializer(), response) else throw IOException()
         }
     }
 }
