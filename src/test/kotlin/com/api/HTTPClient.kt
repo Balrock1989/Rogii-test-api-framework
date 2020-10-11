@@ -41,15 +41,14 @@ open class HTTPClient {
             )
             // Install the all-trusting trust manager
             val sslContext = SSLContext.getInstance("SSL")
-            sslContext.init(null, trustAllCerts, SecureRandom())
+            sslContext.init(null, trustAllCerts, null)
             // Create an ssl socket factory with our all-trusting manager
             val sslSocketFactory = sslContext.socketFactory
             val builder: OkHttpClient.Builder = OkHttpClient.Builder()
             builder.addInterceptor(AllureOkHttp3())
             if (System.getProperty("config.logger").toBoolean()) builder.addNetworkInterceptor(LoggingInterceptor())
             builder.proxy(proxy)
-            builder.sslSocketFactory(sslSocketFactory, (trustAllCerts[0] as X509TrustManager))
-            builder.hostnameVerifier { hostname, session -> true }.build()
+            builder.sslSocketFactory(sslSocketFactory, (trustAllCerts[0] as X509TrustManager)).build()
         } catch (e: Exception) {
             throw RuntimeException(e)
         }
