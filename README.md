@@ -1,4 +1,4 @@
-# Rogii-test-api-framework
+#test-api-framework
 ## Фреймворк для тестирования REST API
 
 ### *Особенности:*
